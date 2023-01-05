@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import icon from './../assets/icons/shopping-cart.png'
+import { Link } from "react-router-dom";
 
 interface product {
     "id": number,
@@ -34,7 +35,6 @@ const Home = () =>{
         params.set(param, val.replaceAll(" ",""));
         window.location.href = window.location.href.replace(window.location.hash, "") +  "#?" + params.toString()
     }
-
     function setBrand(val: string){
         if(getParam("brand") === 'null'){
             setUrl("brand",val.replaceAll(" ",""))
@@ -156,15 +156,19 @@ const Home = () =>{
             
             {resultFilteredList.map((e : {id: string; images: string[];  title: string; description: string; price: string}, i) => {     
                 return (
+                
                 <div className="col-span-1 h-80 bg-white p-1 relative overflow-hidden" key={e.id} >
+                    <Link to={"/product?id=" + e.id}>
                     <img className="h-52 object-cover w-full" src={e.images[0]} alt="" />
                     <h1 className="text-xl ">{e.title}</h1>
                     <h1 className="text-lg w-[90%] text-blue-600">{e.price} $</h1>
                     <h1 className="text-base w-[90%]">{e.description}</h1>
+                    </Link>
                     <button onClick={()=> toCart(e.id)} className="absolute bottom-2 right-2"  >
                         <img src={icon} alt="" />
                     </button>
                 </div>
+               
                 ) 
             })}
               

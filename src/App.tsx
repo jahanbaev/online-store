@@ -4,6 +4,8 @@ import './App.css';
 import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Home from './pages/home';
 import Cart from './pages/cart';
+import Product from './pages/product';
+
 const App = () => {
   return <Router>
     <nav className="bg-slate-900 flex items-center justify-between flex-wrap bg-grey-darkest p-6  w-full z-10 pin-t">
@@ -32,8 +34,10 @@ const App = () => {
 		</div>
 	</nav>
     <Routes>
+		<Route path="/product" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/" element={<Home />} />
+		
     </Routes>
   </Router>;
 };

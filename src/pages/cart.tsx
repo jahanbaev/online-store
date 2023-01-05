@@ -28,7 +28,8 @@ const Cart = () =>{
         let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
         settList(products)
     }
-    return <div>
+    return <div className="flex">
+        <div className="w-full">
         {
             list.map((e : product, index : number)=>{
                     return (<div className="p-2" key={index} >
@@ -43,6 +44,10 @@ const Cart = () =>{
             })
             
         }
+    </div>
+    <div className="w-96 h-64 p-2">
+        <div className="bg-white w-full h-full"></div>
+    </div>
     </div>
 } 
 

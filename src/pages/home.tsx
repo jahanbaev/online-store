@@ -13,7 +13,8 @@ interface product {
     "brand": string,
     "category": string,
     "thumbnail": string,
-    "images": string[]
+    "images": string[],
+    "amount"?: number
 }
 
 const Home = () =>{
@@ -73,8 +74,8 @@ const Home = () =>{
         let product : product= resultList.filter((e : {id: number})=>{return e.id === parseInt(id)})[0]
         if(cart.includes(parseInt(id))){
             products = products.filter((e: {id: number}) => e.id !== parseInt(id))
-            console.log("removed")
         }else{
+            product.amount = 1
             products.push(product)
         }
 

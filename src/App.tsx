@@ -5,6 +5,7 @@ import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Home from './pages/home';
 import Cart from './pages/cart';
 import Product from './pages/product';
+import Popup from './pages/Popup';
 
 const App = () => {
   return <Router>
@@ -36,6 +37,7 @@ const App = () => {
 	<div className='max-w-7xl m-auto'>
     <Routes>
 		<Route path="/product" element={<Product />} />
+		<Route path="/pop" element={<Popup />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/" element={<Home />} />
     </Routes>

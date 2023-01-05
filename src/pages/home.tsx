@@ -54,7 +54,6 @@ const Home = () =>{
             setUrl("category", val.replaceAll(" ",""))
         }else{
             if(window.location.href.includes(val.replaceAll(" ",""))){
-                
                 setUrl("category", String(getParam("category")).replace("*" + val.replaceAll(" ",""), "").replace(val.replaceAll(" ",""), ""))
             }else{
                 setUrl("category", getParam("category") + "*" + val.replaceAll(" ",""))
@@ -87,14 +86,47 @@ const Home = () =>{
         
         localStorage.setItem("cart", JSON.stringify(products)) 
     }
+
+    function querySearch(){
+        setResultFilteredList(resultList)
+                let s: string[] | string = getParam("brand").split("*");
+                let fil = resultList
+                if(s[0] !== 'null'){
+                fil = resultFilteredList.filter((e : {brand: string;})=>{
+                    let val = String(e.brand)
+                    return ((s[0] === "" && s.length === 1))?true:s.includes(val.replaceAll(" ",""))
+                })
+                }
+
+                
+
+                s = getParam("category").split("*");
+                if(s[0] !== 'null'){
+                    fil = fil.filter((e : {category: string;})=>{
+                        let val = String(e.category)
+                        return ((s[0] === "" && s.length === 1) || s[0] === "null")?true:s.includes(val.replaceAll(" ",""))
+                    })
+                }
+                
+                
+                s = getParam("search");
+
+                if(s !== 'null'){
+                fil = fil.filter((e : {description: string;})=>{
+                        let val = String(e.description)
+                        let s = getParam("search");
+                        return (s === "" || s === "null")?true:val.toLowerCase().replaceAll(" ","").includes(s)
+                })
+                }
+
+                setResultFilteredList(fil)
+    }
     
     useEffect(() => {
-        let cart : number[] = []; 
+        let cart : number[] = [];
         if(localStorage.getItem('cart') == null){
             localStorage.setItem("cart", "[]")
         }
-
-
         let products: product[] = JSON.parse(localStorage.getItem('cart')  + "")
         
         products.forEach((e : {id: number})=> {
@@ -102,7 +134,6 @@ const Home = () =>{
         })
         
         setCart(cart)
-
 
         fetch('https://dummyjson.com/products?limit=100')
             .then(req => req.json()).then(res => {
@@ -112,43 +143,23 @@ const Home = () =>{
                 res.products.forEach((e : {brand: string}) => {
                     if(!a.includes(e.brand)) a.push(e.brand.replaceAll(" ",""))
                 })
-
                 setBrands(a)
-
                 a  = []
                 res.products.forEach((e : {category: string}) => {
                     if(!a.includes(e.category)) a.push(e.category.replaceAll(" ",""))
                 })
 
                 setCategores(a)
+                
+                
             })
     }, []);
 
     useEffect(() => {
             window.addEventListener('hashchange', () => {
-                
-                setResultFilteredList(resultList)
-                let s: string[] = getParam("brand").split("*");
-                let fil = resultFilteredList.filter((e : {brand: string;})=>{
-                    let val = String(e.brand)
-                    return ((s[0] === "" && s.length === 1) || s[0] === "null")?true:s.includes(val.replaceAll(" ",""))
-                })
-                
-                
-                s = getParam("category").split("*");
-                fil = fil.filter((e : {category: string;})=>{
-                    let val = String(e.category)
-                    return ((s[0] === "" && s.length === 1) || s[0] === "null")?true:s.includes(val.replaceAll(" ",""))
-                })
-
-                fil = fil.filter((e : {description: string;})=>{
-                        let val = String(e.description)
-                        let s = getParam("search")
-                        return (s === "" || s === "null")?true:val.toLowerCase().replaceAll(" ","").includes(s)
-                    })
-
-                setResultFilteredList(fil)
+                querySearch()
             })
+            querySearch()
     }, [resultList]);
 
     
@@ -156,11 +167,11 @@ const Home = () =>{
         
         <div className="flex w-full">
             <div className="w-96 h-[100vh] pt-3">
-                <input type="text" onChange={fill} className="w-[90%] h-[32px] bg-white rounded-md m-auto block p-2" placeholder="search any products"/>
+                <input type="text" value={getParam("search") !== 'null'?getParam("search"):""} onChange={fill} className="w-[90%] h-[32px] bg-white rounded-md m-auto block p-2" placeholder="search any products"/>
                 <div className="w-full mt-2 p-2 h-80 overflow-y-scroll">
                 {
                     brands.map((e :string, index : number)=>{
-                        return (<div onClick={ ()=> setBrand(e)} className="col-span-1 h-12 flex items-center mb-1 bg-white text-slate-900 p-1 relative overflow-hidden" key={index} >
+                        return (<div onClick={ ()=> setBrand(e)} className={window.location.href.includes(e)?"h-12 flex items-center mb-1 bg-slate-900 text-white p-1":"h-12 flex items-center mb-1 bg-white text-slate-900 p-1"} key={index} >
                                     <h1 className="text-xl ">{e}</h1>
                                 </div>) 
                     })          
@@ -171,8 +182,11 @@ const Home = () =>{
                 <div className="w-full mt-2 p-2 h-80 overflow-y-scroll">
                 {
                     category.map((e :string, index : number)=>{
-                        return (<div onClick={ ()=> setCategory(e)} className="col-span-1 h-12 flex items-center mb-1 bg-white text-slate-900 p-1 relative overflow-hidden" key={index} >
-                                    <h1 className="text-xl text-slate-900">{e}</h1>
+                        return (<div onClick={ ()=> setCategory(e)} 
+                                     className={window.location.href.includes(e)?"h-12 flex items-center mb-1 bg-slate-900 text-white p-1":"h-12 flex items-center mb-1 bg-white text-slate-900 p-1"} 
+                                     key={index} 
+                                     >
+                                    <h1 className="text-xl">{e}</h1>
                                 </div>) 
                     })          
                    

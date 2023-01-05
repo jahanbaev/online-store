@@ -82,7 +82,8 @@ const Cart = () =>{
                 list[i]["amount"] = 0
             }
                 let num : number  = parseInt(list[i].amount + "") + 1
-                list[i].amount = num ;
+                if(list[i].stock >= num)
+                list[i].amount = num;
             }
         })
         updateList()
@@ -116,10 +117,13 @@ const Cart = () =>{
                                     <h1 className="text-xl text-slate-900">{e.title}  <span className="ml-5 text-xl text-blue-700">{e.price} $</span></h1>
                                     <h1 className="text-xl text-slate-900">{e.description}</h1>
                                     </div>
+                                    <div>
                                     <div className="flex h-[100%] items-center justify-center">
                                         <p onClick={()=> minus(e.id)} className="w-5 h-5 bg-slate-900 text-white flex justify-center items-center cursor-pointer">-</p>
                                         <p className="p-2">{(e.amount == null)?"1":e.amount}</p>
                                         <p onClick={()=> plus(e.id)}  className="w-5 h-5 bg-slate-900 text-white flex justify-center items-center cursor-pointer">+</p>
+                                    </div>
+                                    <p className="opacity-70">stock: {e.stock}</p>
                                     </div>
                                 </div>
                             </div>) 

@@ -33,12 +33,13 @@ const App = () => {
 			</ul>
 		</div>
 	</nav>
+	<div className='max-w-7xl m-auto'>
     <Routes>
 		<Route path="/product" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/" element={<Home />} />
-		
     </Routes>
+	</div>
   </Router>;
 };
 export default App;

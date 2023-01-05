@@ -17,6 +17,7 @@ interface product {
 }
 
 const Home = () =>{
+    const [cart, setCart] = useState<number[]>([]);
    
     const [resultList, setResultList] = useState([]);
     const [resultFilteredList, setResultFilteredList] = useState([]);
@@ -66,18 +67,42 @@ const Home = () =>{
     }
 
     function toCart(id: string){
+        let c : number[] = []; 
+
+        let products: product[] = JSON.parse(localStorage.getItem('cart')  + "")
+        let product : product= resultList.filter((e : {id: number})=>{return e.id === parseInt(id)})[0]
+        if(cart.includes(parseInt(id))){
+            products = products.filter((e: {id: number}) => e.id !== parseInt(id))
+            console.log("removed")
+        }else{
+            products.push(product)
+        }
+
+        products.forEach((e : {id: number})=> {
+            c.push(e.id)
+        })
+        
+        setCart(c)
+        
+        localStorage.setItem("cart", JSON.stringify(products)) 
+    }
+    
+    useEffect(() => {
+        let cart : number[] = []; 
         if(localStorage.getItem('cart') == null){
             localStorage.setItem("cart", "[]")
         }
 
-        let products: object[] = JSON.parse(localStorage.getItem('cart')  + "")
-        let product : product= resultList.filter((e : {id: number})=>{return e.id === parseInt(id)})[0]
-        products.push(product)
-        console.log(products)
-        localStorage.setItem("cart", JSON.stringify(products)) 
-    }
-    
-    useEffect(() => {   
+
+        let products: product[] = JSON.parse(localStorage.getItem('cart')  + "")
+        
+        products.forEach((e : {id: number})=> {
+            cart.push(e.id)
+        })
+        
+        setCart(cart)
+
+
         fetch('https://dummyjson.com/products?limit=100')
             .then(req => req.json()).then(res => {
                 setResultList(res.products);
@@ -100,7 +125,8 @@ const Home = () =>{
 
     useEffect(() => {
             window.addEventListener('hashchange', () => {
-                 setResultFilteredList(resultList )
+                
+                setResultFilteredList(resultList)
                 let s: string[] = getParam("brand").split("*");
                 let fil = resultFilteredList.filter((e : {brand: string;})=>{
                     let val = String(e.brand)
@@ -127,7 +153,7 @@ const Home = () =>{
     
     return <div>
         
-        <div className="flex w-[98vw]">
+        <div className="flex w-full">
             <div className="w-96 h-[100vh] pt-3">
                 <input type="text" onChange={fill} className="w-[90%] h-[32px] bg-white rounded-md m-auto block p-2" placeholder="search any products"/>
                 <div className="w-full mt-2 p-2 h-80 overflow-y-scroll">
@@ -156,7 +182,6 @@ const Home = () =>{
             
             {resultFilteredList.map((e : {id: string; images: string[];  title: string; description: string; price: string}, i) => {     
                 return (
-                
                 <div className="col-span-1 h-80 bg-white p-1 relative overflow-hidden" key={e.id} >
                     <Link to={"/product?id=" + e.id}>
                     <img className="h-52 object-cover w-full" src={e.images[0]} alt="" />
@@ -164,8 +189,8 @@ const Home = () =>{
                     <h1 className="text-lg w-[90%] text-blue-600">{e.price} $</h1>
                     <h1 className="text-base w-[90%]">{e.description}</h1>
                     </Link>
-                    <button onClick={()=> toCart(e.id)} className="absolute bottom-2 right-2"  >
-                        <img src={icon} alt="" />
+                    <button onClick={()=> toCart(e.id)} className="absolute bottom-28 right-2 bg-slate-900 bg-opacity-40 backdrop-blur-sm text-white p-1 rounded-sm ">
+                       {(!cart.includes(parseInt(e.id)))?"Add to cart": "remove from card"}
                     </button>
                 </div>
                

@@ -4,6 +4,7 @@ import Home from './pages/home';
 import Cart from './pages/cart';
 import Product from './pages/product';
 import { productAmount } from './scripts/interfaces';
+import NotFound from './pages/NotFound';
 const App = () => {	
 	const [local, setLocals] = useState<number>(0)
 	const [count, setCount] = useState<number>(0)
@@ -60,6 +61,7 @@ const App = () => {
 			<Route path="/product" element={<Product clc={setLocal}/>} />
   	      	<Route path="/cart" element={<Cart clc={setLocal}/>} />
   	      	<Route path="/" element={<Home clc={setLocal} />} />
+			<Route path='*' element={<NotFound />}/>
   	  </Routes>
 		</div>
   	</Router>;

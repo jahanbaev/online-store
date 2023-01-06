@@ -51,23 +51,29 @@ const Cart = (props: { clc: () => void; }) =>{
 
     useEffect(() => {
         let i: number = 0;
-        let p: number[] = []
+        let p: number[] = [];
         for(i = 0; i < Math.floor(list.length / maxElems); i++){
-            p.push(i+1)
+            p.push(i+1);
         }
-        if(Math.floor(list.length / maxElems) !== list.length / maxElems) p.push(i+1)
-        setPagination(p)
+        if(Math.floor(list.length / maxElems) !== list.length / maxElems) p.push(i+1);
+        setPagination(p);
+
+        if(p.length  < pageIndex && pagination.length !== 0) {
+            setPageIndex(p.length)
+        }
+
+
 
     }, [maxElems, list.length])
 
     useEffect(() => {
-        localStorage.setItem("cart", JSON.stringify(list))
-        props.clc()
+        localStorage.setItem("cart", JSON.stringify(list));
+        props.clc();
     }, [list])
 
     function setTo(event: {target : HTMLInputElement}){
-        setMaxElems((parseInt(event.target.value) === 0)?1:parseInt(event.target.value))
-        getList()
+        setMaxElems((parseInt(event.target.value) === 0)?1:parseInt(event.target.value));
+        getList();
     }
 
     function updateList(){
@@ -128,7 +134,8 @@ const Cart = (props: { clc: () => void; }) =>{
             <input type="text" placeholder="max" onChange={setTo} className="p-2 m-2" />
             {
                 list.map((e : product, index : number)=>{
-                    return (<div className={(((pageIndex - 1) * maxElems) + maxElems > index && ((pageIndex - 1) * maxElems) <= index )?"p-2":"p-2 hidden"}   key={index} >
+                    return (<div className={(((pageIndex - 1) * maxElems) + maxElems > index && ((pageIndex - 1) * maxElems) <= index )?"p-2 relative":"p-2 hidden relative"}   key={index} >
+                                <p className="absolute min-w-[15px] h-5 top-3 text-center rounded-sm pl-1 pr-1 left-3 leading-5 bg-black text-white bg-opacity-40 backdrop-blur-lg ">{index + 1}</p>
                                 <div className="bg-white w-full flex p-1 items-center">
                                     <img src={e.images[0]} className="w-32 h-28" alt="" />
                                     <div className="p-2 w-full h-28 items-start flex flex-col">
@@ -148,6 +155,10 @@ const Cart = (props: { clc: () => void; }) =>{
                 })
 
             }
+
+            <div className={(list.length === 0)?"visible":"hidden"}>
+                <h1 className="text-center w-full text-3xl mt-10">no products (</h1>
+            </div>
 
         <div className="w-full flex justify-center">
             {

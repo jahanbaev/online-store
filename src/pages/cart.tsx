@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Popup from "../components/Popup";
+import { getCartList, addCart } from "../scripts/addCart";
 interface product {
     "id": number,
     "title": string,
@@ -21,6 +23,8 @@ const Cart = (props: { clc: () => void; }) =>{
     const [maxElems, setMaxElems] = useState(1)
     const [pageIndex, setPageIndex] = useState(1)
     const [pagination, setPagination] = useState<number[]>([])
+    const [hidden, setHidden] = useState(false);
+    const [cartList, setCartList] = useState<number[]>([]);
     useEffect(() => {
         getList()
         setMaxElems(2)
@@ -28,6 +32,17 @@ const Cart = (props: { clc: () => void; }) =>{
         settList(products)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [settest])
+
+    function toCart(id: string){
+        setCartList(getCartList())
+        setCartList(addCart(id, list, cartList))
+        props.clc()
+    }
+
+    function show(){
+        setHidden(true)
+    }
+
 
 
     useEffect(() => {
@@ -107,6 +122,7 @@ const Cart = (props: { clc: () => void; }) =>{
     }
 
     return <div className="flex">
+        <Popup hidden={hidden} reverse={()=>{setHidden(false); return false; }}/>
         <div className="w-full pt-2">
             <input type="text" placeholder="max" onChange={setTo} className="p-2 m-2" />
             {

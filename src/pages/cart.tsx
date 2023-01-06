@@ -14,7 +14,7 @@ interface product {
     "amount": number
 }
 
-const Cart = () =>{
+const Cart = (props: { clc: () => void; }) =>{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [test, settest] = useState<product[]>([]);
     const [list, settList] = useState<product[]>([]);
@@ -43,6 +43,7 @@ const Cart = () =>{
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(list))
+        props.clc()
     }, [list])
 
     function setTo(event: {target : HTMLInputElement}){
@@ -51,7 +52,7 @@ const Cart = () =>{
     }
 
     function updateList(){
-        let s: product ={
+        let s: product = {
             id: 0,title: "", description: "", price: 0, discountPercentage:0, rating: 0, stock: 0, brand: "", category: "",thumbnail: "",images: [], amount: 1
         }
 
@@ -83,7 +84,10 @@ const Cart = () =>{
                 list[i].amount = num;
             }
         })
+        
         updateList()
+        
+
     }
 
     function getList(){

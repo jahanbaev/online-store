@@ -61,8 +61,7 @@ const Home = (props: { clc: () => void; }) =>{
         setValue(window.location.href)
         setResultFilteredList(resultList)
                 let s: string[] | string = getParam("brand").split("*");
-                let fil = resultList
-
+                let fil = [...resultList]
                 if(s[0] !== 'null')
                     fil = resultFilteredList.filter((e : {brand: string;})=>{
                         let val = String(e.brand)
@@ -108,6 +107,27 @@ const Home = (props: { clc: () => void; }) =>{
                     let s = parseInt(getParam("stockMax")) ;
                     return  s >= e.stock
                 })
+
+                switch (getParam("sort")) {
+                    case "price-asc":
+                        fil.sort(function(a:product, b:product){return a.price - b.price})
+                    break;
+                    case 'price-desc':
+                        fil.sort(function(a:product, b:product){return b.price - a.price})
+                    break;
+                    case 'rating-asc':
+                        fil.sort(function(a:product, b:product){return a.rating - b.rating})
+                    break;
+                    case 'rating-desc':
+                        fil.sort(function(a:product, b:product){return b.rating - a.rating})
+                    break;
+                    case 'discount-asc':
+                        fil.sort(function(a:product, b:product){return a.discountPercentage - b.discountPercentage})
+                    break;
+                    case 'discount-desc':
+                        fil.sort(function(a:product, b:product){return b.discountPercentage - a.discountPercentage})
+                    break;
+                }
                 
                 found.current!.innerText = "found: " + fil.length.toString()
                 if(resultList.length > 0){
@@ -177,8 +197,8 @@ const Home = (props: { clc: () => void; }) =>{
                             <button onClick={()=> reset()} className="bg-blue-700 text-white w-full m-1 h-10">Reset filters</button>
                             <CopyToClipboard text={val}
                                              onCopy={() => copied()}>
-                          <button className="bg-gray-900 text-white w-full m-1 h-10">{copy}</button>
-                        </CopyToClipboard>
+                            <button className="bg-gray-900 text-white w-full m-1 h-10">{copy}</button>
+                            </CopyToClipboard>
                         </div>
                         <FilterList brands={brands} filter={setFilter} filType="brand"/>
                         <FilterList brands={category} filter={setFilter} filType="category"/>

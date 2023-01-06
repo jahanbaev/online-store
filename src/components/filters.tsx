@@ -1,16 +1,21 @@
 import React from "react";
-import { setUrl } from "../scripts/setUrl";
+import { setUrl, getParam } from "../scripts/setUrl";
 const Filter = (props: { found: React.LegacyRef<HTMLDivElement> | undefined; }) => {
+
+
+    function setSort(e:{target: HTMLSelectElement}){
+       setUrl("sort",e.target.value)
+    }
     return (
         <div className="flex w-full mt-3">
-                    <select className="ng-pristine ng-valid ng-touched">
+                    <select onChange={setSort} className="ng-pristine ng-valid ng-touched">
                         <option value="sort-title" className="sort-name">Sort options:</option>
-                        <option value="price-ASC">Sort by price ASC</option>
-                        <option value="price-DESC">Sort by price DESC</option>
-                        <option value="rating-ASC">Sort by rating ASC</option>
-                        <option value="rating-DESC">Sort by rating DESC</option>
-                        <option value="discount-ASC">Sort by discount ASC</option>
-                        <option value="discount-DESC">Sort by discount DESC</option>
+                        <option value="price-asc" selected={(getParam("sort") === "price-asc")?true:false}>Sort by price ASC</option>
+                        <option value="price-desc" selected={(getParam("sort") === "price-desc")?true:false}>Sort by price DESC</option>
+                        <option value="rating-asc" selected={(getParam("sort") === "rating-asc")?true:false}>Sort by rating ASC</option>
+                        <option value="rating-desc" selected={(getParam("sort") === "rating-desc")?true:false}>Sort by rating DESC</option>
+                        <option value="discount-asc" selected={(getParam("sort") === "discount-asc")?true:false}>Sort by discount ASC</option>
+                        <option value="discount-desc" selected={(getParam("sort") === "discount-desc")?true:false}>Sort by discount DESC</option>
                     </select>
 
                     <div className="text-xl m-auto" ref={props.found}></div>

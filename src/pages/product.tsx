@@ -10,9 +10,6 @@ const Product = (props: { clc: () => void; }) =>{
     const [hidden, setHidden] = useState(false);
     const [cartList, setCartList] = useState<number[]>([]);
 
-    
-
-
     function getParam(val: string): string {
         const urlParams = new URLSearchParams(window.location.href.split("?")[1]);
         return urlParams.get(val) + "".replaceAll("+", " ")

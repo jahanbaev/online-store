@@ -8,7 +8,8 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { product } from "../scripts/interfaces";
 import Card from "../components/card";
 
-const Home = () =>{
+
+const Home = (props: { clc: () => void; }) =>{
     const [cart, setCart] = useState<number[]>([]);
     const [maxStock, setMaxStock] = useState<number>(9999999999999);
     const [maxPrice, setPrice] = useState<number>(9999999999999);
@@ -41,6 +42,7 @@ const Home = () =>{
 
     function toCart(id: string){
         setCart(addCart(id, resultList, cart))
+        props.clc()
     }
 
     function copied(){

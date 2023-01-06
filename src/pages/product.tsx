@@ -4,7 +4,7 @@ import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import { product } from "../scripts/interfaces";
 
-const Product = () =>{
+const Product = (props: { clc: () => void; }) =>{
     const [list, settList] = useState<product[]>([]);
     const image  = useRef<HTMLImageElement>(null);
 

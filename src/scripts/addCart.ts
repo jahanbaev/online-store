@@ -16,7 +16,6 @@ interface product {
 
 function addCart(id: string, list : product[], cart: number[]): number[]{
     let c : number[] = []; 
-
     let products: product[] = JSON.parse(localStorage.getItem('cart')  + "")
     let product : product= list.filter((e : {id: number})=>{return e.id === parseInt(id)})[0]
     if(cart.includes(parseInt(id))){
@@ -30,7 +29,8 @@ function addCart(id: string, list : product[], cart: number[]): number[]{
         c.push(e.id)
     })
 
-    localStorage.setItem("cart", JSON.stringify(products)) 
+    localStorage.setItem("cart", JSON.stringify(products))
+    
     return c
 }
 

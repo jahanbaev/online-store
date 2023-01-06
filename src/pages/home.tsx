@@ -145,7 +145,7 @@ const Home = () =>{
     return <div>
                 <div className="flex w-full">
                     <div className="w-96 h-[100vh] pt-3">
-                        <input type="text" value={getParam("search") !== 'null'?getParam("search"):""} onChange={fill} className="w-[90%] h-[32px] bg-white rounded-md m-auto block p-2" placeholder="search any products"/>
+                        <input type="text" value={getParam("search") !== 'null'?getParam("search"):""} onChange={fill} className="w-[92.5%] h-[36px] bg-white  ml-2 block p-2 " placeholder="search any products"/>
                         <FilterList brands={brands} filter={setFilter} filType="brand"/>
                         <FilterList brands={category} filter={setFilter} filType="category"/>
                         <h1 className="text-xl mt-4">Price:</h1>

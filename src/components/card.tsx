@@ -21,7 +21,7 @@ const Card = (props: {
                 className={(window.location.href.includes("big=true"))?"h-[17rem] object-cover w-full":"h-52 object-cover w-full"}
                 src={e.images[0]} alt="" 
                 />
-            <h1 className="text-xl ">{e.title}</h1>
+            <h1 className="product-title text-xl">{e.title}</h1>
             <h1 className="text-lg w-[90%] text-blue-600">{e.price} $</h1>
             <h1 className="text-base w-[90%]">{e.description}</h1>
             </Link>

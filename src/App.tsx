@@ -11,7 +11,7 @@ const App = () => {
     <nav className="bg-slate-900 flex items-center justify-between flex-wrap bg-grey-darkest p-6  w-full z-10 pin-t">
 		<div className="flex items-center flex-no-shrink text-white mr-6">
 			<Link className="text-white no-underline hover:text-white hover:no-underline" to="/">
-				<span className="text-2xl pl-2"><i className="em em-grinning"></i> Brand McBrandface</span>
+				<span className="text-2xl pl-2"><i className="em em-grinning"></i>Online Store</span>
 			</Link>
 		</div>
 

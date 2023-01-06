@@ -23,8 +23,8 @@ const Product = () =>{
         <div className="w-full p-2">
         {
            list.map((e: product) =>{
-                return <div className="flex">
-                    <div className="w-[130%] mr-8">
+                return <div className="flex mt-4">
+                    <div className="w-[100%] mr-8">
                         <img className=" w-full mb-4 h-96 object-cover " ref={image} src={e.images[0]} alt="" />
                         <div className="flex w-full overflow-x-auto">
                             {
@@ -34,7 +34,13 @@ const Product = () =>{
                             }
                         </div>
                     </div>
-                    <div className="w-full">
+                    <div className="w-full max-w-[520px]">
+                        <div className="flex">
+                            <p className="bg-white p-1 pl-2 pr-2 mr-2">Category: {e.category}</p>
+                            <p className="bg-white p-1 pl-2 pr-2 mr-2">Brand: {e.brand}</p>
+                            <p className="bg-white p-1 pl-2 pr-2 mr-2 product-title max-w-[180px]">product: {e.title}</p>
+
+                        </div>
                         <h1 className="text-slate-900 text-5xl">{e.title}</h1>
                         <h1 className="text-blue-700 text-4xl mt-4">price: {e.price} $</h1>
                         <h1 className="text-slate-900 text-2xl mt-4 mb-2" >Rating: {e.rating}</h1>

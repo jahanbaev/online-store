@@ -67,7 +67,6 @@ const Home = (props: { clc: () => void; }) =>{
                         let val = String(e.brand)
                         return ((s[0] === "" && s.length === 1))?true:s.includes(val.replaceAll(" ",""))
                     })
-
                 s = getParam("category").split("*");
                 if(s[0] !== 'null')
                     fil = fil.filter((e : {['category']: string;})=>{

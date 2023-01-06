@@ -4,7 +4,10 @@ import Rating from '@mui/material/Rating';
 import { product } from "../scripts/interfaces";
 import Popup from "../components/Popup";
 import { getCartList, addCart } from "../scripts/addCart";
+import { useNavigate } from "react-router";
+
 const Product = (props: { clc: () => void; }) =>{
+    const navigate = useNavigate();
     const [list, settList] = useState<product[]>([]);
     const image  = useRef<HTMLImageElement>(null);
     const [hidden, setHidden] = useState(false);
@@ -28,8 +31,9 @@ const Product = (props: { clc: () => void; }) =>{
             })
     }, []);
 
-    function show(){
-        setHidden(true)
+    function show(){    
+        navigate('/cart', { state: { id: getParam("id") } });
+        // setHidden(true)
     }
 
 

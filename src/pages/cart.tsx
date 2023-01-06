@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Popup from "../components/Popup";
 import { getCartList, addCart } from "../scripts/addCart";
+import { useLocation } from "react-router";
 interface product {
     "id": number,
     "title": string,
@@ -25,7 +26,12 @@ const Cart = (props: { clc: () => void; }) =>{
     const [pagination, setPagination] = useState<number[]>([])
     const [hidden, setHidden] = useState(false);
     const [cartList, setCartList] = useState<number[]>([]);
+    const {state} = useLocation();
+    
+    
     useEffect(() => {
+        const st = (state === null)?0:state.id
+        if(st > 0)show()
         getList()
         setMaxElems(2)
         let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
@@ -42,8 +48,6 @@ const Cart = (props: { clc: () => void; }) =>{
     function show(){
         setHidden(true)
     }
-
-
 
     useEffect(() => {
         let i: number = 0;
@@ -99,10 +103,7 @@ const Cart = (props: { clc: () => void; }) =>{
                 list[i].amount = num;
             }
         })
-        
         updateList()
-        
-
     }
 
     function getList(){
@@ -156,8 +157,10 @@ const Cart = (props: { clc: () => void; }) =>{
             }
         </div>
     </div>
-    <div className="w-96 h-64 p-2">
-        <div className="bg-white w-full h-full"></div>
+    <div className="w-[32rem] pt-[4.4rem] min-h-96 p-2">
+        <div className="bg-white w-full h-full p-1">
+            <button onClick={()=>show()} className="bg-blue-700 text-white w-full h-10">Buy now</button>
+        </div>
     </div>
     </div>
 } 

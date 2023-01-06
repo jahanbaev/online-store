@@ -13,11 +13,11 @@ interface product {
     "category": string,
     "thumbnail": string,
     "images": string[]
-    "amount"?: number
+    "amount": number
 }
 
 const Cart = () =>{
-    const [test, settest] = useState<product[]>([]);
+    const [test, setTest] = useState<product[]>([]);
     const [list, settList] = useState<product[]>([]);
     const [maxElems, setMaxElems] = useState(1)
     const [pageIndex, setPageIndex] = useState(1)
@@ -27,7 +27,7 @@ const Cart = () =>{
         setMaxElems(2)
         let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
         settList(products)
-    }, [settest])
+    }, [getList, setTest])
 
 
     useEffect(() => {
@@ -52,17 +52,17 @@ const Cart = () =>{
 
     function updateList(){
         let s: product ={
-            id: 0,title: "", description: "", price: 0, discountPercentage:0, rating: 0, stock: 0, brand: "", category: "",thumbnail: "",images: []
+            id: 0,title: "", description: "", price: 0, discountPercentage:0, rating: 0, stock: 0, brand: "", category: "",thumbnail: "",images: [], amount: 1
         }
 
         list.push(s)
-        settList(list.filter(elem=> elem.id !== 0))
+        settList(list.filter(elem=> elem.id !== 0).sort(function(a : product, b: product){return b.amount - a.amount}))
     }
 
     function minus(id: number){
         list.forEach((e, i)=>{
            if(e.id === id) {
-            if(list[i].amount == null || list[i].amount === 1){
+            if(list[i].amount === 1){
                 settList(list.filter(elem=> elem.id !== id))
             }else{
                 var listOrg: product = {...list[i]}
@@ -78,9 +78,6 @@ const Cart = () =>{
     function plus(id: number){
         list.forEach((e, i)=>{
            if(e.id === id) {
-            if(list[i].amount == null){
-                list[i]["amount"] = 0
-            }
                 let num : number  = parseInt(list[i].amount + "") + 1
                 if(list[i].stock >= num)
                 list[i].amount = num;
@@ -89,7 +86,8 @@ const Cart = () =>{
         updateList()
     }
 
-    function getList(){
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    function getList(): void{
         if(localStorage.getItem('cart') == null){
             localStorage.setItem("cart", "[]")
         }

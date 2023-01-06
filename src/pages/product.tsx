@@ -1,18 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
-interface product {
-    "id": number,
-    "title": string,
-    "description": string,
-    "price": number,
-    "discountPercentage":number,
-    "rating": number,
-    "stock": number,
-    "brand": string,
-    "category": string,
-    "thumbnail": string,
-    "images": string[]
-}
+import { product } from "../scripts/interfaces";
 
 const Product = () =>{
     const [list, settList] = useState<product[]>([]);
@@ -28,14 +15,7 @@ const Product = () =>{
                 settList(res.products.filter((e: {id: number}) => e.id === parseInt(getParam("id"))));
             })
     }, []);
-    function getList(){
-        if(localStorage.getItem('cart') == null){
-            localStorage.setItem("cart", "[]")
-        }
 
-        let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
-        settList(products)
-    }
     return <div className="flex">
         <div className="w-full p-2">
         {

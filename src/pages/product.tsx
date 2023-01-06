@@ -1,32 +1,53 @@
 import React, { useEffect, useRef, useState } from "react";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
-import Typography from '@mui/material/Typography';
 import { product } from "../scripts/interfaces";
-
+import Popup from "../components/Popup";
+import { getCartList, addCart } from "../scripts/addCart";
 const Product = (props: { clc: () => void; }) =>{
     const [list, settList] = useState<product[]>([]);
     const image  = useRef<HTMLImageElement>(null);
+    const [hidden, setHidden] = useState(false);
+    const [cartList, setCartList] = useState<number[]>([]);
+
+    
+
 
     function getParam(val: string): string {
         const urlParams = new URLSearchParams(window.location.href.split("?")[1]);
         return urlParams.get(val) + "".replaceAll("+", " ")
     }
+
+    function toCart(id: string){
+        setCartList(addCart(id, list, cartList))
+        props.clc()
+    }
+
     useEffect(() => {
+        setCartList(getCartList())
         fetch('https://dummyjson.com/products?limit=100')
             .then(req => req.json()).then(res => {
                 settList(res.products.filter((e: {id: number}) => e.id === parseInt(getParam("id"))));
             })
     }, []);
 
+    function show(){
+        setHidden(true)
+    }
+
+
+
+
+
     return <div className="flex">
         <div className="w-full p-2">
         {
            list.map((e: product) =>{
                 return <div className="flex mt-4">
+                    <Popup hidden={hidden} reverse={()=>{setHidden(false); return false; }}/>
                     <div className="w-[100%] mr-8">
-                        <img className=" w-full mb-4 h-96 object-cover " ref={image} src={e.images[0]} alt="" />
-                        <div className="flex w-full overflow-x-auto">
+                        <img className=" mb-4 h-96 object-cover w-[700px]" ref={image} src={e.images[0]} alt="" />
+                        <div className="flex w-[700px] overflow-x-auto">
                             {
                                 e.images.map(e =>{
                                     return (<><img src={e} onClick={() => image.current!.src = e } alt="" className="w-60 h-24 m-1"/></>)
@@ -58,8 +79,8 @@ const Product = (props: { clc: () => void; }) =>{
                         <div className="bg-white p-2 mt-4">
                             <h1 className="text-2xl mb-3 m-1 mt-0">Order now or later</h1>
                             <div className="flex">
-                            <button className="bg-blue-700 text-white w-full m-1 h-10">Buy now</button>
-                            <button className="bg-gray-900 text-white w-full m-1 h-10">Add to cart</button>
+                            <button onClick={()=>show()} className="bg-blue-700 text-white w-full m-1 h-10">Buy now</button>
+                            <button onClick={()=>toCart(e.id + "")} className="bg-gray-900 text-white w-full m-1 h-10">{(!cartList.includes(e.id))?"Add to cart": "remove from card"}</button>
                             </div>
                         </div>
                     </div>

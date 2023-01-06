@@ -34,4 +34,15 @@ function addCart(id: string, list : product[], cart: number[]): number[]{
     return c
 }
 
+
+function getCartList(): number[]{
+    let c : number[] = []; 
+    let products: product[] = JSON.parse(localStorage.getItem('cart')  + "")
+    products.forEach((e : {id: number})=> {
+        c.push(e.id)
+    })
+    
+    return c
+}
+export {getCartList}
 export {addCart} 

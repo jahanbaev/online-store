@@ -3,7 +3,6 @@ import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Home from './pages/home';
 import Cart from './pages/cart';
 import Product from './pages/product';
-import Popup from './pages/Popup';
 import { productAmount } from './scripts/interfaces';
 const App = () => {	
 	const [local, setLocals] = useState<number>(0)
@@ -43,7 +42,7 @@ const App = () => {
 			<div className="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden pt-6 lg:pt-0" id="nav-content">
 				<ul className="list-reset lg:flex justify-end flex-1 items-center">
 				<li className="mr-3">
-						<p className="text-white">cart price: {local} $</p>
+						<p className="text-white mr-5">cart price: {local}$</p>
 					</li>
 					<li className="mr-3">
 						<Link className="inline-block py-2 px-4 text-white no-underline" to="/">Home</Link>
@@ -59,7 +58,6 @@ const App = () => {
 		<div className='max-w-7xl m-auto'>
   	  <Routes>
 			<Route path="/product" element={<Product clc={setLocal}/>} />
-			<Route path="/pop" element={<Popup />} />
   	      	<Route path="/cart" element={<Cart clc={setLocal}/>} />
   	      	<Route path="/" element={<Home clc={setLocal} />} />
   	  </Routes>

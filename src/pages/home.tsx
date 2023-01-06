@@ -176,7 +176,7 @@ const Home = (props: { clc: () => void; }) =>{
                         <input className="hidden" value={val} />               
                             <button onClick={()=> reset()} className="bg-blue-700 text-white w-full m-1 h-10">Reset filters</button>
                             <CopyToClipboard text={val}
-                          onCopy={() => copied()}>
+                                             onCopy={() => copied()}>
                           <button className="bg-gray-900 text-white w-full m-1 h-10">{copy}</button>
                         </CopyToClipboard>
                         </div>

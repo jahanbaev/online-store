@@ -51,8 +51,11 @@ body{
   height: 100vh;
   z-index: 2;
 }
-.pop-up_buy .overlay {
+.overlay {
+  left: 0;
+  top: 0;
   width: 100%;
+  z-index: 9999;
   height: 100%;
   position: absolute;
   background: rgba(0, 0, 0, 0.3);
@@ -60,22 +63,23 @@ body{
   backdrop-filter: blur(15px);
 }
 .pop-up_buy .card {
+  z-index: 99999;
   position: absolute;
-  width: 350px;
+  width: 400px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #fff;
+  background: rgb(236, 236, 236);
   padding: 20px;
-  border-radius: 5px;
-  border: 2px solid #1A4ADA;
+
   text-align: center;
 }
 .pop-up_buy .card input {
   margin-bottom: 5px;
   padding: 5px;
-  border: 1px solid #1A4ADA;
-  border-radius: 5px;
+  background: rgb(255, 255, 255);
+  width: 80%;
+  margin-top: 6px;
 }
 .pop-up_buy .card input:focus {
   outline: none;
@@ -101,20 +105,49 @@ body{
   padding: 5px;
   border: 1px solid #1A4ADA;
   border-radius: 5px;
+  transform: translateY(110px);
+  background: rgba(255, 255, 255, 0.247);
+}
+.pop-up_buy .card .credit::after{
+  display: block;
+  content: "";
+  width: 60px;
+  height: 34px;
+  background: rgb(190, 204, 0);
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 0;
+  border-radius: 5px;
+}
+.pop-up_buy .card .credit-card .credit{
+    position: relative;
+    overflow: hidden;
+    height: 180px;
+    background: #161616;
+    width: 96%;
+    margin: auto;
+    margin-top: 20px;
+    border-radius: 4px;
+    padding: 5px;
 }
 .pop-up_buy .card .credit-card .credit .card-data {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   font-size: 14px;
 }
 .pop-up_buy .card .credit-card .credit .card-data label {
   font-size: 16px;
   line-height: 120%;
-  color: #1A4ADA;
+  color: #ffffff;
+  margin-left: 20px;
 }
 .pop-up_buy .card .credit-card .credit .card-data input {
-  width: 35%;
+  width: 70px;
+  border-radius: 5px;
+  margin-left: 4px;
+  background-color: rgba(255, 255, 255, 0.247);
 }
 .pop-up_buy .card .confirm {
   border: none;

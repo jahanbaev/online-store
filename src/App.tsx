@@ -20,7 +20,7 @@ const App = () => {
 
     	products.forEach((e : {price: number; amount: number})=>{
 			sum += e.price * e.amount;
-			count++
+			count += e.amount ;
 		})
 		setLocals(sum)
 		setCount(count)

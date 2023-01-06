@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Popup from "../components/Popup";
 import { getCartList, addCart } from "../scripts/addCart";
 import { useLocation } from "react-router";
+import { Link } from 'react-router-dom';
 interface product {
     "id": number,
     "title": string,
@@ -134,14 +135,16 @@ const Cart = (props: { clc: () => void; }) =>{
             <input type="text" placeholder="max" onChange={setTo} className="p-2 m-2" />
             {
                 list.map((e : product, index : number)=>{
-                    return (<div className={(((pageIndex - 1) * maxElems) + maxElems > index && ((pageIndex - 1) * maxElems) <= index )?"p-2 relative":"p-2 hidden relative"}   key={index} >
-                                <p className="absolute min-w-[15px] h-5 top-3 text-center rounded-sm pl-1 pr-1 left-3 leading-5 bg-black text-white bg-opacity-40 backdrop-blur-lg ">{index + 1}</p>
-                                <div className="bg-white w-full flex p-1 items-center">
-                                    <img src={e.images[0]} className="w-32 h-28" alt="" />
-                                    <div className="p-2 w-full h-28 items-start flex flex-col">
-                                    <h1 className="text-xl text-slate-900">{e.title}  <span className="ml-5 text-xl text-blue-700">{e.price} $</span></h1>
-                                    <h1 className="text-xl text-slate-900">{e.description}</h1>
-                                    </div>
+                    return (<div  className={(((pageIndex - 1) * maxElems) + maxElems > index && ((pageIndex - 1) * maxElems) <= index )?"p-2 relative":"p-2 hidden relative"}   key={index} > 
+                                <div className="bg-white  relative w-full flex p-1 items-center">
+                                    <Link to={"/product?id=" + e.id} className="flex w-full">
+                                        <p className="absolute min-w-[15px] h-5 top-1 text-center rounded-sm pl-1 pr-1 left-1 leading-5 bg-black text-white bg-opacity-40 backdrop-blur-lg ">{index + 1}</p>
+                                        <img src={e.images[0]} className="w-32 h-28" alt="" />
+                                        <div className="p-2 w-full h-28 items-start flex flex-col">
+                                        <h1 className="text-xl text-slate-900">{e.title}  <span className="ml-5 text-xl text-blue-700">{e.price} $</span></h1>
+                                        <h1 className="text-xl text-slate-900">{e.description}</h1>
+                                        </div>
+                                    </Link>
                                     <div>
                                     <div className="flex h-[100%] items-center justify-center">
                                         <p onClick={()=> minus(e.id)} className="w-5 h-5 bg-slate-900 text-white flex justify-center items-center cursor-pointer">-</p>
@@ -150,6 +153,7 @@ const Cart = (props: { clc: () => void; }) =>{
                                     </div>
                                     <p className="opacity-70">stock: {e.stock}</p>
                                     </div>
+
                                 </div>
                             </div>) 
                 })

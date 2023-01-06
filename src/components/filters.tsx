@@ -21,7 +21,7 @@ const Filter = (props: { found: React.LegacyRef<HTMLDivElement> | undefined; }) 
                     <div className="text-xl m-auto" ref={props.found}></div>
 
                     <div className="flex p-1 w-32 bg-white">
-                        <button onClick={()=>setUrl("big","false")} className={(!window.location.href.includes("big=true"))?"bg-slate-900 text-white w-full text-lg ml-1":"text-slate-900 bg-gray-200 w-full text-lg ml-1"}>4x4</button>
+                        <button onClick={()=>setUrl("big","false")} className={(!window.location.href.includes("big=true"))?"bg-slate-900 text-white w-full text-lg ":"text-slate-900 bg-gray-200 w-full text-lg "}>4x4</button>
                         <button onClick={()=>setUrl("big","true")} className={(window.location.href.includes("big=true"))?"bg-slate-900 text-white w-full text-lg ml-1":"text-slate-900 bg-gray-200 w-full text-lg ml-1"}>2x2</button>
                     </div>
         </div>

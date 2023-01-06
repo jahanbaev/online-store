@@ -4,6 +4,7 @@ import {setUrl, getParam} from './../scripts/setUrl'
 import Filter from "../components/filters";
 import FilterList from "../components/filterList";
 import MultiRange from "../components/multiRange";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { product } from "../scripts/interfaces";
 import Card from "../components/card";
 
@@ -14,8 +15,13 @@ const Home = () =>{
     const [resultList, setResultList] = useState([]);
     const [resultFilteredList, setResultFilteredList] = useState([]);
     const [brands, setBrands] = useState<string[]>([]);
+    const [val, setValue] = useState<string>("");
+    const [copy, setCopy] = useState<string>("copy filters");
+
+
     const [category, setCategores] = useState<string[]>([]);
     const found = useRef<HTMLDivElement>(null);
+    const foundRes = useRef<HTMLDivElement>(null);
     
     function setFilter(type:string, val: string): void{
         if(getParam(type) === 'null'){
@@ -37,7 +43,20 @@ const Home = () =>{
         setCart(addCart(id, resultList, cart))
     }
 
+    function copied(){
+        setCopy("copied!!")
+        setTimeout(() => {
+            setCopy("copy filters")
+        }, 2000);
+    }
+
+    function reset(){
+        window.location.href =  window.location.href.split("#")[0] + "#?"
+        querySearch()
+    }
+
     function querySearch(){
+        setValue(window.location.href)
         setResultFilteredList(resultList)
                 let s: string[] | string = getParam("brand").split("*");
                 let fil = resultList
@@ -89,6 +108,11 @@ const Home = () =>{
                 })
                 
                 found.current!.innerText = "found: " + fil.length.toString()
+                if(resultList.length > 0){
+                    foundRes.current!.innerText = (fil.length === 0)?"no results :(":""
+                }else{
+                    foundRes.current!.innerText = "Loading..."
+                }
                 setResultFilteredList(fil)
     }
     
@@ -146,6 +170,14 @@ const Home = () =>{
                 <div className="flex w-full">
                     <div className="w-96 h-[100vh] pt-3">
                         <input type="text" value={getParam("search") !== 'null'?getParam("search"):""} onChange={fill} className="w-[92.5%] h-[36px] bg-white  ml-2 block p-2 " placeholder="search any products"/>
+                        <div className="flex p-1 w-[98%] mt-2 mb-[-5px]">
+                        <input className="hidden" value={val} />               
+                            <button onClick={()=> reset()} className="bg-blue-700 text-white w-full m-1 h-10">Reset filters</button>
+                            <CopyToClipboard text={val}
+                          onCopy={() => copied()}>
+                          <button className="bg-gray-900 text-white w-full m-1 h-10">{copy}</button>
+                        </CopyToClipboard>
+                        </div>
                         <FilterList brands={brands} filter={setFilter} filType="brand"/>
                         <FilterList brands={category} filter={setFilter} filType="category"/>
                         <h1 className="text-xl mt-4">Price:</h1>
@@ -156,6 +188,7 @@ const Home = () =>{
                     <div className="ml-3 w-full">
                         <Filter found={found}/>
                         <Card list={resultFilteredList} listSecond={resultList} addToCart={toCart} cart={cart}/>
+                        <div ref={foundRes} className="text-center text-6xl mt-8"></div>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,8 @@ interface product {
     "brand": string,
     "category": string,
     "thumbnail": string,
-    "images": string[]
+    "images": string[],
+    "amount"?: number
 }
 
 export {type product}

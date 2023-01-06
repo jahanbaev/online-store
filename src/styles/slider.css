@@ -1,0 +1,38 @@
+.multi-range-slider-container {
+    width: 18em;
+    margin: auto;
+  }
+  
+  .divOutput {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+  }
+  
+  .divOutput > div:first-child {
+    text-align: right;
+    padding-right: 10px;
+    width: 20%;
+  }
+  .divOutput > div:nth-child(2) {
+    text-align: left;
+    padding-left: 10px;
+    width: 80%;
+  }
+  .divOutput span {
+    margin: 10px;
+  }
+  .multi-range-slider{
+    box-shadow: none !important;
+    border-radius: 0px !important;
+    border: none !important;
+  }
+  .multi-range-slider .bar-inner{
+    background-color: black !important;
+    box-shadow: none !important;
+  }
+  .bar-right, .bar-left{
+    box-shadow: none !important;
+    border-radius: 0px !important;
+    background-color: #fff !important;
+  }

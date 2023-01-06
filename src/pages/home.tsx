@@ -3,10 +3,14 @@ import {addCart} from './../scripts/addCart'
 import {setUrl, getParam} from './../scripts/setUrl'
 import Filter from "../components/filters";
 import FilterList from "../components/filterList";
+import MultiRange from "../components/multiRange";
 import { product } from "../scripts/interfaces";
 import Card from "../components/card";
+
 const Home = () =>{
     const [cart, setCart] = useState<number[]>([]);
+    const [maxStock, setMaxStock] = useState<number>(9999999999999);
+    const [maxPrice, setPrice] = useState<number>(9999999999999);
     const [resultList, setResultList] = useState([]);
     const [resultFilteredList, setResultFilteredList] = useState([]);
     const [brands, setBrands] = useState<string[]>([]);
@@ -52,13 +56,38 @@ const Home = () =>{
                     })
                 
                 s = getParam("search");
-                if(s !== 'null'){
+                if(s !== 'null')
                     fil = fil.filter((e : {description: string;})=>{
                     let val = String(e.description)
                     let s = getParam("search");
                     return (s === "" || s === "null")?true:val.toLowerCase().replaceAll(" ","").includes(s)
                 })
-                }
+
+    
+                if('null' !== getParam("priceMin"))
+                    fil = fil.filter((e : {price: number;})=>{
+                    let s = parseInt(getParam("priceMin")) ;
+                    return  s <= e.price
+                })
+
+                if('null' !== getParam("priceMax"))
+                    fil = fil.filter((e : {price: number;})=>{
+                    let s = parseInt(getParam("priceMax")) ;
+                    return  s >= e.price
+                })
+
+                if('null' !== getParam("stockMin"))
+                    fil = fil.filter((e : {stock: number;})=>{
+                    let s = parseInt(getParam("stockMin")) ;
+                    return  s <= e.stock
+                })
+
+                if('null' !== getParam("stockMax"))
+                    fil = fil.filter((e : {stock: number;})=>{
+                    let s = parseInt(getParam("stockMax")) ;
+                    return  s >= e.stock
+                })
+                
                 found.current!.innerText = "found: " + fil.length.toString()
                 setResultFilteredList(fil)
     }
@@ -79,11 +108,21 @@ const Home = () =>{
             .then(req => req.json()).then(res => {
                 setResultList(res.products);
                 setResultFilteredList(res.products);
-                let a : string[] = []
-                res.products.forEach((e : {brand: string}) => {
+                let a : string[] = [];
+                let maxPrice = 0;
+                let maxStock = 0;
+                res.products.forEach((e : {
+                    stock: number;
+                    price: number;
+                    brand: string
+                }) => {
+                    if(maxPrice < e.price)maxPrice = e.price
+                    if(maxStock < e.stock)maxStock = e.stock
                     if(!a.includes(e.brand)) a.push(e.brand.replaceAll(" ",""))
                 })
-                
+
+                setPrice(maxPrice)
+                setMaxStock(maxStock)
                 setBrands(a)
                 a = []
                 res.products.forEach((e : {category: string}) => {
@@ -109,6 +148,10 @@ const Home = () =>{
                         <input type="text" value={getParam("search") !== 'null'?getParam("search"):""} onChange={fill} className="w-[90%] h-[32px] bg-white rounded-md m-auto block p-2" placeholder="search any products"/>
                         <FilterList brands={brands} filter={setFilter} filType="brand"/>
                         <FilterList brands={category} filter={setFilter} filType="category"/>
+                        <h1 className="text-xl mt-4">Price:</h1>
+                        <MultiRange maxVal={maxPrice} name="price"/>
+                        <h1 className="text-xl mt-4">Stock:</h1>
+                        <MultiRange maxVal={maxStock} name="stock"/>
                     </div>
                     <div className="ml-3 w-full">
                         <Filter found={found}/>

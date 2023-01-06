@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { updateCommaList } from "typescript";
-
 interface product {
     "id": number,
     "title": string,
@@ -17,7 +15,8 @@ interface product {
 }
 
 const Cart = () =>{
-    const [test, setTest] = useState<product[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [test, settest] = useState<product[]>([]);
     const [list, settList] = useState<product[]>([]);
     const [maxElems, setMaxElems] = useState(1)
     const [pageIndex, setPageIndex] = useState(1)
@@ -27,7 +26,8 @@ const Cart = () =>{
         setMaxElems(2)
         let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
         settList(products)
-    }, [getList, setTest])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [settest])
 
 
     useEffect(() => {
@@ -86,8 +86,7 @@ const Cart = () =>{
         updateList()
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    function getList(): void{
+    function getList(){
         if(localStorage.getItem('cart') == null){
             localStorage.setItem("cart", "[]")
         }

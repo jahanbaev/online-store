@@ -4,6 +4,7 @@ import { getCartList, addCart } from "../scripts/addCart";
 import { useLocation } from "react-router";
 import { Link } from 'react-router-dom';
 import { setUrl, getParam } from "../scripts/setUrl";
+import Product from './product';
 interface product {
     "id": number,
     "title": string,
@@ -169,7 +170,7 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     return <div className="flex">
         <Popup hidden={hidden} reverse={()=>{setHidden(false); return false; }}/>
         <div className="w-full pt-2">
-            <input type="text" ref={maxInput} placeholder="max" onChange={setTo}  className="p-2 m-2" />
+           <div className="flex ml-2 items-center">max croducts: <input type="text" ref={maxInput} placeholder="max" onChange={setTo}  className="p-2 m-2" /></div> 
             {
                 list.map((e : product, index : number)=>{
                     return (<div  className={(((pageIndex - 1) * maxElems) + maxElems > index && ((pageIndex - 1) * maxElems) <= index )?"p-2 relative":"p-2 hidden relative"}   key={index} > 

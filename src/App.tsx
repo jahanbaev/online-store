@@ -14,6 +14,7 @@ const App = () => {
 	},[local])
 
 	function setLocal(){
+		if(localStorage.getItem('cart') == null)localStorage.setItem('cart','[]')
 		let products: productAmount[] = JSON.parse(localStorage.getItem('cart')  + "")
 		let sum = 0;
 		let count = 0;

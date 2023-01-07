@@ -6,7 +6,7 @@ import Popup from "../components/Popup";
 import { getCartList, addCart } from "../scripts/addCart";
 import { useNavigate } from "react-router";
 
-const Product = (props: { clc: () => void; }) =>{
+const Product: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     const navigate = useNavigate();
     const [list, settList] = useState<product[]>([]);
     const image  = useRef<HTMLImageElement>(null);

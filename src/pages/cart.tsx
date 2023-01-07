@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React,{ FC, useEffect, useRef, useState } from "react";
 import Popup from "../components/Popup";
 import { getCartList, addCart } from "../scripts/addCart";
 import { useLocation } from "react-router";
@@ -18,15 +18,19 @@ interface product {
     "amount": number
 }
 
-const Cart = (props: { clc: () => void; }) =>{
+const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [test, settest] = useState<product[]>([]);
     const [list, settList] = useState<product[]>([]);
-    const [maxElems, setMaxElems] = useState(1)
-    const [pageIndex, setPageIndex] = useState(1)
-    const [pagination, setPagination] = useState<number[]>([])
-    const [hidden, setHidden] = useState(false);
-    const [cartList, setCartList] = useState<number[]>([]);
+    const [maxElems, setMaxElems] = useState<number>(1);
+    const [pageIndex, setPageIndex] = useState<number>(1);
+    const [pagination, setPagination] = useState<number[]>([]);
+    const [products, setproductsLen] = useState({length:0,total:0});
+    const [discount, setDiscount] = useState<number>(0);
+    const [promCodes, setPromCodes] = useState<{val: string; list: string[]}>({val: "",list:[]});
+    const [hidden, setHidden] = useState<boolean>(false);
+    const promo = useRef<HTMLDivElement>(null);
+    const promoInput = useRef<HTMLInputElement>(null);
     const {state} = useLocation();
     
     
@@ -39,12 +43,6 @@ const Cart = (props: { clc: () => void; }) =>{
         settList(products)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [settest])
-
-    function toCart(id: string){
-        setCartList(getCartList())
-        setCartList(addCart(id, list, cartList))
-        props.clc()
-    }
 
     function show(){
         setHidden(true)
@@ -64,29 +62,38 @@ const Cart = (props: { clc: () => void; }) =>{
         }
 
 
-
     }, [maxElems, list.length])
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(list));
         props.clc();
-    }, [list])
+        let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
+        let len = 0
+        let total = 0
+        products.forEach(e=>{
+            len += e.amount
+            total += e.amount * e.price
+        })
+        if(localStorage.getItem("promos") === null) localStorage.setItem("promos","[]")
+        setproductsLen({length:len,total:total})
+        setDiscount(total - (total/100 * 10 * promCodes.list.length))
+        setPromCodes({val: "", list: JSON.parse(localStorage.getItem("promos")+"")})
+        }, [list])
 
-    function setTo(event: {target : HTMLInputElement}){
+    function setTo(event: {target : HTMLInputElement}):void{
         setMaxElems((parseInt(event.target.value) === 0)?1:parseInt(event.target.value));
         getList();
     }
 
-    function updateList(){
+    function updateList():void{
         let s: product = {
             id: 0,title: "", description: "", price: 0, discountPercentage:0, rating: 0, stock: 0, brand: "", category: "",thumbnail: "",images: [], amount: 1
         }
-
         list.push(s)
         settList(list.filter(elem=> elem.id !== 0).sort(function(a : product, b: product){return b.amount - a.amount}))
     }
 
-    function minus(id: number){
+    function minus(id: number):void{
         list.forEach((e, i)=>{
            if(e.id === id) {
             if(list[i].amount === 1){
@@ -102,7 +109,7 @@ const Cart = (props: { clc: () => void; }) =>{
         })
     }
 
-    function plus(id: number){
+    function plus(id: number):void{
         list.forEach((e, i)=>{
            if(e.id === id) {
                 let num : number  = parseInt(list[i].amount + "") + 1
@@ -129,6 +136,33 @@ const Cart = (props: { clc: () => void; }) =>{
         setPagination(p)
     }
 
+    function removePromo(e:string){
+        let list: string[] = promCodes.list
+        setPromCodes({val: "", list: list.filter(el=> e !== el )})
+        localStorage.setItem("promos", JSON.stringify(list.filter(el=> e !== el)))
+        setDiscount(products.total - (products.total/100 * 10 * list.filter(el=> e !== el ).length))
+    }
+
+    function listPromo(){
+        promoInput.current!.value = ""
+        promo.current!.classList.add("hidden")
+        let list: string[] = promCodes.list
+        list.push(promCodes.val+"")
+        setPromCodes({val: "", list: list})
+        localStorage.setItem("promos",JSON.stringify(list))
+        setDiscount(products.total - (products.total/100 * 10 * list.length))
+    }
+
+    function setPromo(e:{target:HTMLInputElement}){
+        let promos = ["rs","epm","test"]
+        promo.current!.classList.add("hidden")
+        if(promos.includes(e.target.value.toLocaleLowerCase()) && !promCodes.list.includes(e.target.value.toLocaleLowerCase())){
+            promo.current!.classList.remove("hidden")
+            promo.current!.querySelector("p")!.innerText = "10% " + e.target.value
+            setPromCodes({val: e.target!.value, list: promCodes.list})
+        }
+    }
+
     return <div className="flex">
         <Popup hidden={hidden} reverse={()=>{setHidden(false); return false; }}/>
         <div className="w-full pt-2">
@@ -153,7 +187,6 @@ const Cart = (props: { clc: () => void; }) =>{
                                     </div>
                                     <p className="opacity-70">stock: {e.stock}</p>
                                     </div>
-
                                 </div>
                             </div>) 
                 })
@@ -172,8 +205,25 @@ const Cart = (props: { clc: () => void; }) =>{
             }
         </div>
     </div>
-    <div className="w-[32rem] pt-[4.4rem] min-h-96 p-2">
-        <div className="bg-white w-full h-full p-1">
+    <div className="w-[32rem] pt-[4.4rem] min-h-[100px] p-2">
+        <div className="bg-white w-full h-full p-1 text-center">
+            <h1 className="text-3xl mt-6">Products: {products.length}</h1>
+            <h1 className={(products.total === discount)?"text-3xl mt-6":"text-3xl mt-6 line-through"}>Total: {products.total}</h1>
+            <h1 className={"text-3xl mt-3 mb-2"}>{(products.total !== discount)?"Discount: " + discount:""}</h1>
+            {
+                promCodes.list.map((e:string)=>{
+                    return (
+                        <div className="w-full relative h-10 flex justify-center items-center bg-gray-200 mt-1 p-1">Promo code {e} -10% <button className="ml-auto bg-black p-1 text-white absolute right-1" onClick={()=>removePromo(e)}>remove</button></div>
+                    )
+                })
+            }
+
+            
+            <input ref={promoInput} onChange={setPromo} className="w-full bg-gray-200 mt-4 mb-3 h-10 p-2" placeholder="enter promo code (epm, rs, test)" type="text" />
+            <div className="flex mb-3 hidden" ref={promo} >
+                <p className="w-full text-left text-xl">-10% blah blah</p>
+                <button onClick={()=>listPromo()} className="bg-black text-white w-16 h-8">Add</button>
+            </div>
             <button onClick={()=>show()} className="bg-blue-700 text-white w-full h-10">Buy now</button>
         </div>
     </div>

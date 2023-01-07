@@ -15,7 +15,7 @@ const Popup = (props : {
     const [validDirty, setValidDirty] = useState(-1)
     const [codeDirty, setCodeDirty] = useState(-1)
     const [cvv, setCvv] = useState(300)
-    const [hidden, setHidden] = useState(true)
+    const [hidden, setHidden] = useState(false)
 
     const isAllValid = () : boolean => !nameDirty && !numberDirty && !addressDirty  && !emailDirty && !cardDirty && !validDirty && !codeDirty
     let lastVal: string = ""

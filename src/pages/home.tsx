@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Rating from '@mui/material/Rating';
 import {addCart} from './../scripts/addCart'
 import {setUrl, getParam} from './../scripts/setUrl'
 import Filter from "../components/filters";
@@ -9,17 +10,15 @@ import { product } from "../scripts/interfaces";
 import Card from "../components/card";
 
 
-const Home = (props: { clc: () => void; }) =>{
+const Home: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     const [cart, setCart] = useState<number[]>([]);
     const [maxStock, setMaxStock] = useState<number>(9999999999999);
     const [maxPrice, setPrice] = useState<number>(9999999999999);
-    const [resultList, setResultList] = useState([]);
-    const [resultFilteredList, setResultFilteredList] = useState([]);
+    const [resultList, setResultList] = useState<product[]>([]);
+    const [resultFilteredList, setResultFilteredList] = useState<product[]>([]);
     const [brands, setBrands] = useState<string[]>([]);
     const [val, setValue] = useState<string>("");
     const [copy, setCopy] = useState<string>("copy filters");
-
-
     const [category, setCategores] = useState<string[]>([]);
     const found = useRef<HTMLDivElement>(null);
     const foundRes = useRef<HTMLDivElement>(null);
@@ -36,28 +35,28 @@ const Home = (props: { clc: () => void; }) =>{
         }
     }
 
-    function fill(event : {target : HTMLInputElement}){
+    function fill(event : {target : HTMLInputElement}):void{
         setUrl("search", event.target.value.toLowerCase())
     }
 
-    function toCart(id: string){
+    function toCart(id: string):void{
         setCart(addCart(id, resultList, cart))
         props.clc()
     }
 
-    function copied(){
+    function copied():void{
         setCopy("copied!!")
         setTimeout(() => {
             setCopy("copy filters")
         }, 2000);
     }
 
-    function reset(){
+    function reset():void{
         window.location.href =  window.location.href.split("#")[0] + "#?"
         querySearch()
     }
 
-    function querySearch(){
+    function querySearch(): void | boolean{
         setValue(window.location.href)
         setResultFilteredList(resultList)
                 let s: string[] | string = getParam("brand").split("*");

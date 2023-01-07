@@ -16,6 +16,7 @@ const Card = (props: {
         <div
         className={(window.location.href.includes("big=true"))?"col-span-2 h-96 bg-white p-1 relative overflow-hidden":"col-span-1 h-80 bg-white p-1 relative overflow-hidden"}
             key={e.id} >
+            <p className="bg-blue-600 text-white absolute top-1 p-1 rounded-md leading-5 right-0 scale-75">-{e.discountPercentage} %</p>
             <Link to={"/product?id=" + e.id}>
             <img 
                 className={(window.location.href.includes("big=true"))?"h-[17rem] object-cover w-full":"h-52 object-cover w-full"}

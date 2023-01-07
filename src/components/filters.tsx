@@ -3,7 +3,7 @@ import { setUrl, getParam } from "../scripts/setUrl";
 const Filter = (props: { found: React.LegacyRef<HTMLDivElement> | undefined; }) => {
 
 
-    function setSort(e:{target: HTMLSelectElement}){
+    function setSort(e:{target: HTMLSelectElement}): void{
        setUrl("sort",e.target.value)
     }
     return (

@@ -3,6 +3,7 @@ import Popup from "../components/Popup";
 import { getCartList, addCart } from "../scripts/addCart";
 import { useLocation } from "react-router";
 import { Link } from 'react-router-dom';
+import { setUrl, getParam } from "../scripts/setUrl";
 interface product {
     "id": number,
     "title": string,
@@ -25,16 +26,18 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     const [maxElems, setMaxElems] = useState<number>(1);
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [pagination, setPagination] = useState<number[]>([]);
-    const [products, setproductsLen] = useState({length:0,total:0});
+    const [products, setproductsLen] = useState<{length:number,total:number}>({length:0,total:0});
     const [discount, setDiscount] = useState<number>(0);
     const [promCodes, setPromCodes] = useState<{val: string; list: string[]}>({val: "",list:[]});
     const [hidden, setHidden] = useState<boolean>(false);
     const promo = useRef<HTMLDivElement>(null);
     const promoInput = useRef<HTMLInputElement>(null);
+    const maxInput = useRef<HTMLInputElement>(null);
+
     const {state} = useLocation();
     
     
-    useEffect(() => {
+    useEffect(():void => {
         const st = (state === null)?0:state.id
         if(st > 0)show()
         getList()
@@ -48,7 +51,7 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
         setHidden(true)
     }
 
-    useEffect(() => {
+    useEffect(():void => {
         let i: number = 0;
         let p: number[] = [];
         for(i = 0; i < Math.floor(list.length / maxElems); i++){
@@ -60,11 +63,10 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
         if(p.length  < pageIndex && pagination.length !== 0) {
             setPageIndex(p.length)
         }
-
-
     }, [maxElems, list.length])
 
-    useEffect(() => {
+    useEffect(():void => {
+        maxInput.current!.value = (getParam("max") === 'null')?'2':getParam("max")
         localStorage.setItem("cart", JSON.stringify(list));
         props.clc();
         let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
@@ -81,7 +83,8 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
         }, [list])
 
     function setTo(event: {target : HTMLInputElement}):void{
-        setMaxElems((parseInt(event.target.value) === 0)?1:parseInt(event.target.value));
+        setUrl("max",event.target!.value)
+        setMaxElems((event.target.value === "")?1:parseInt(event.target.value));
         getList();
     }
 
@@ -120,7 +123,7 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
         updateList()
     }
 
-    function getList(){
+    function getList(): void {
         if(localStorage.getItem('cart') == null){
             localStorage.setItem("cart", "[]")
         }
@@ -136,14 +139,14 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
         setPagination(p)
     }
 
-    function removePromo(e:string){
+    function removePromo(e:string): void{
         let list: string[] = promCodes.list
         setPromCodes({val: "", list: list.filter(el=> e !== el )})
         localStorage.setItem("promos", JSON.stringify(list.filter(el=> e !== el)))
         setDiscount(products.total - (products.total/100 * 10 * list.filter(el=> e !== el ).length))
     }
 
-    function listPromo(){
+    function listPromo(): void{
         promoInput.current!.value = ""
         promo.current!.classList.add("hidden")
         let list: string[] = promCodes.list
@@ -153,7 +156,7 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
         setDiscount(products.total - (products.total/100 * 10 * list.length))
     }
 
-    function setPromo(e:{target:HTMLInputElement}){
+    function setPromo(e:{target:HTMLInputElement}): void{
         let promos = ["rs","epm","test"]
         promo.current!.classList.add("hidden")
         if(promos.includes(e.target.value.toLocaleLowerCase()) && !promCodes.list.includes(e.target.value.toLocaleLowerCase())){
@@ -166,7 +169,7 @@ const Cart: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     return <div className="flex">
         <Popup hidden={hidden} reverse={()=>{setHidden(false); return false; }}/>
         <div className="w-full pt-2">
-            <input type="text" placeholder="max" onChange={setTo} className="p-2 m-2" />
+            <input type="text" ref={maxInput} placeholder="max" onChange={setTo}  className="p-2 m-2" />
             {
                 list.map((e : product, index : number)=>{
                     return (<div  className={(((pageIndex - 1) * maxElems) + maxElems > index && ((pageIndex - 1) * maxElems) <= index )?"p-2 relative":"p-2 hidden relative"}   key={index} > 

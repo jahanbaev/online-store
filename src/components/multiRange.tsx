@@ -3,15 +3,13 @@ import { useState } from "react";
 import MultiRangeSlider, { ChangeResult } from "multi-range-slider-react";
 import "./../styles/slider.css";
 import { getParam, setUrl } from "../scripts/setUrl";
-export default function MultiRange(props: {
-  name: string; maxVal: string | number | undefined; 
-}) {
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
 
-  const monthNames = [""];
-  let onload = 0;
-  function setParams(e: ChangeResult){
+const MultiRange: React.FunctionComponent<{name: string; maxVal: string | number | undefined;}> = (props) => {
+  const [minValue, setMinValue] = useState<number>(0);
+  const [maxValue, setMaxValue] = useState<number>(0);
+  const monthNames: string[] = [""];
+  let onload: number = 0;
+  function setParams(e: ChangeResult): void{
             if(onload !== 0){
               setUrl(props.name+"Min",e.minValue+"")
               setUrl(props.name+"Max",e.maxValue+"")
@@ -43,3 +41,4 @@ export default function MultiRange(props: {
     </div>
   );
 }
+export default MultiRange

@@ -9,7 +9,6 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { product } from "../scripts/interfaces";
 import Card from "../components/card";
 
-
 const Home: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     const [cart, setCart] = useState<number[]>([]);
     const [maxStock, setMaxStock] = useState<number>(9999999999999);
@@ -137,7 +136,8 @@ const Home: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     }
     
     useEffect(() => {
-        let cart : number[] = [];
+        props.clc()
+        let cart: number[] = [];
         if(localStorage.getItem('cart') == null){
             localStorage.setItem("cart", "[]")
         }

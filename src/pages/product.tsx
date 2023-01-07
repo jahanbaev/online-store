@@ -12,6 +12,7 @@ const Product = (props: { clc: () => void; }) =>{
     const image  = useRef<HTMLImageElement>(null);
     const [hidden, setHidden] = useState(false);
     const [cartList, setCartList] = useState<number[]>([]);
+    const [images, setImages] = useState<string[]>([])
 
     function getParam(val: string): string {
         const urlParams = new URLSearchParams(window.location.href.split("?")[1]);
@@ -28,17 +29,18 @@ const Product = (props: { clc: () => void; }) =>{
         fetch('https://dummyjson.com/products?limit=100')
             .then(req => req.json()).then(res => {
                 settList(res.products.filter((e: {id: number}) => e.id === parseInt(getParam("id"))));
+                let img : string[] = []
+                res.products.filter((e: {id: number}) => e.id === parseInt(getParam("id")))[0].images.forEach((element: string) => {
+                    if(!img.includes(element)) img.push(element)
+                });
+                setImages(img)
             })
     }, []);
 
-    function show(){    
+    function show(){
+        if(!cartList.includes(list[0].id))toCart(list[0].id + "");
         navigate('/cart', { state: { id: getParam("id") } });
-        // setHidden(true)
     }
-
-
-
-
 
     return <div className="flex">
         <div className="w-full p-2">
@@ -47,10 +49,12 @@ const Product = (props: { clc: () => void; }) =>{
                 return <div className="flex mt-4">
                     <Popup hidden={hidden} reverse={()=>{setHidden(false); return false; }}/>
                     <div className="w-[100%] mr-8">
-                        <img className=" mb-4 h-96 object-cover w-[700px]" ref={image} src={e.images[0]} alt="" />
+                        <div className="h-96  w-[700px] overflow-hidden">
+                            <img className=" mb-4 h-96 object-cover  w-[700px] transition-all ease-linear duration-300 hover:scale-150" ref={image} src={e.images[0]} alt="" />
+                        </div>
                         <div className="flex w-[700px] overflow-x-auto">
                             {
-                                e.images.map(e =>{
+                                images.map(e =>{
                                     return (<><img src={e} onClick={() => image.current!.src = e } alt="" className="w-60 h-24 m-1"/></>)
                                 })
                             }
@@ -58,14 +62,15 @@ const Product = (props: { clc: () => void; }) =>{
                     </div>
                     <div className="w-full max-w-[520px]">
                         <div className="flex">
-                            <p className="bg-white p-1 pl-2 pr-2 mr-2">Category: {e.category}</p>
-                            <p className="bg-white p-1 pl-2 pr-2 mr-2">Brand: {e.brand}</p>
-                            <p className="bg-white p-1 pl-2 pr-2 mr-2 product-title max-w-[180px]">product: {e.title}</p>
+                            <p className="bg-white p-1 pl-2 pr-2 mr-2">Store {">"}</p>
+                            <p className="bg-white p-1 pl-2 pr-2 mr-2">{e.category} {">"}</p>
+                            <p className="bg-white p-1 pl-2 pr-2 mr-2">{e.brand} {">"}</p>
+                            <p className="bg-white p-1 pl-2 pr-2 mr-2 product-title max-w-[180px]">{e.title}</p>
 
                         </div>
-                        <h1 className="text-slate-900 text-5xl">{e.title}</h1>
-                        <h1 className="text-blue-700 text-4xl mt-4">price: {e.price} $</h1>
-                        <h1 className="text-slate-900 text-2xl mt-4 mb-2" >Rating: {e.rating}</h1>
+                        <h1 className="text-slate-900 text-3xl mt-8">Product {e.title}</h1>
+                        <h1 className="text-blue-700 text-2xl mt-2">price: {e.price} $</h1>
+                        <h1 className="text-slate-900 text-xl mt-4 mb-2" >Rating: {e.rating}</h1>
                         <Box
                           sx={{
                             '& > legend': { mt: 2 },
@@ -74,11 +79,14 @@ const Product = (props: { clc: () => void; }) =>{
                           <Rating name="read-only" value={e.rating} readOnly />
 
                         </Box>
+                        <h1 className="text-slate-900 text-xl mt-4 mb-2" >Stock: {e.stock}</h1>
+                        <h1 className="text-slate-900 text-xl mt-4 mb-2" >Discount: {e.discountPercentage}%</h1>
+
 
                         <p className="text-slate-900 text-4xl mt-4 mb-2">Description</p>
                         <h1 className="text-slate-900 text-2xl">{e.description}</h1>
-                        <div className="bg-white p-2 mt-4">
-                            <h1 className="text-2xl mb-3 m-1 mt-0">Order now or later</h1>
+                        <div className="bg-white p-2 mt-4 mb-6">
+                            <h1 className="text-2xl mb-3 m-1 mt-0">Order now or later for {e.price}$</h1>
                             <div className="flex">
                             <button onClick={()=>show()} className="bg-blue-700 text-white w-full m-1 h-10">Buy now</button>
                             <button onClick={()=>toCart(e.id + "")} className="bg-gray-900 text-white w-full m-1 h-10">{(!cartList.includes(e.id))?"Add to cart": "remove from card"}</button>

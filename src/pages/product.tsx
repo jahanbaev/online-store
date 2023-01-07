@@ -24,16 +24,38 @@ const Product = (props: { clc: () => void; }) =>{
         props.clc()
     }
 
+    let buffer: {buf: number; name:string}[] = []
+
+    function setImage(s: string[]){
+        let img: string[] =[];
+        let img2: number[] =[];
+
+         s.forEach( (element: string) => {
+            img.push(element)
+            fetch(element).then( response =>  response.arrayBuffer()).then( buf => {
+                buffer.push({name:element, buf: buf.byteLength})
+                if(buffer.length === img.length){
+                    img = []
+                    buffer.forEach((e: {buf: number; name:string})=>{
+                        if(!img2.includes(e.buf)){
+                            img2.push(e.buf)
+                            img.push(e.name)
+                        }
+                    })
+                    setImages(img)
+                }
+            })
+        })
+        setImages(img)
+    }
     useEffect(() => {
         setCartList(getCartList())
         fetch('https://dummyjson.com/products?limit=100')
             .then(req => req.json()).then(res => {
                 settList(res.products.filter((e: {id: number}) => e.id === parseInt(getParam("id"))));
                 let img : string[] = []
-                res.products.filter((e: {id: number}) => e.id === parseInt(getParam("id")))[0].images.forEach((element: string) => {
-                    if(!img.includes(element)) img.push(element)
-                });
-                setImages(img)
+                setImage(res.products.filter((e: {id: number}) => e.id === parseInt(getParam("id")))[0].images)
+
             })
     }, []);
 
@@ -55,7 +77,7 @@ const Product = (props: { clc: () => void; }) =>{
                         <div className="flex w-[700px] overflow-x-auto">
                             {
                                 images.map(e =>{
-                                    return (<><img src={e} onClick={() => image.current!.src = e } alt="" className="w-60 h-24 m-1"/></>)
+                                    return (<img  key={e} src={e} onClick={() => image.current!.src = e } alt="" className="w-60 h-24 m-1"/>)
                                 })
                             }
                         </div>

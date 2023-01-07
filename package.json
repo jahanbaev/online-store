@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "homepage": "https://dynamic-puppy-3d0883.netlify.app/",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

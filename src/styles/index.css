@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background: #e7e7e7;
+}
+
+.price{
+  position: relative;
+}
+
+
+
+.custom-scroll::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.custom-scroll::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb
+{
+	background-color: #000000;
+}
+
+
+.product-title{
+  overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 1; /* number of lines to show */
+           line-clamp: 1; 
+   -webkit-box-orient: vertical;
+}
+
+
+.pop-up_buy {
+  width: 100%;
+  height: 100vh;
+  z-index: 2;
+}
+.overlay {
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+  height: 100vh;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+}
+.pop-up_buy .card {
+  z-index: 99999;
+  position: absolute;
+  width: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(236, 236, 236);
+  padding: 20px;
+  text-align: center;
+}
+
+.pop-up_buy .z-full{
+  z-index: 999999999;
+}
+.pop-up_buy .card input {
+  margin-bottom: 5px;
+  padding: 5px;
+  background: rgb(255, 255, 255);
+  width: 80%;
+  margin-top: 6px;
+}
+.pop-up_buy .card input:focus {
+  outline: none;
+}
+.pop-up_buy .card .personal-details h4 {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 120%;
+  color: #1A4ADA;
+  margin-bottom: 10px;
+}
+.pop-up_buy .card .credit-card h4 {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 120%;
+  color: #1A4ADA;
+  margin: 10px 0;
+}
+.pop-up_buy .card .credit-card .credit .card-number {
+  width: 70%;
+  margin-bottom: 5px;
+  text-align: center;
+  padding: 5px;
+  border: 1px solid #1A4ADA;
+  border-radius: 5px;
+  transform: translateY(110px);
+  background: rgba(255, 255, 255, 0.247);
+}
+.pop-up_buy .card .credit::after{
+  display: block;
+  content: "";
+  width: 60px;
+  height: 34px;
+  background: rgb(190, 204, 0);
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 0;
+  border-radius: 5px;
+}
+.pop-up_buy .card .credit-card .credit{
+    position: relative;
+    overflow: hidden;
+    height: 180px;
+    background: #161616;
+    width: 96%;
+    margin: auto;
+    margin-top: 20px;
+    border-radius: 4px;
+    padding: 5px;
+}
+.pop-up_buy .card .credit-card .credit .card-data {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 14px;
+}
+.pop-up_buy .card .credit-card .credit .card-data label {
+  font-size: 16px;
+  line-height: 120%;
+  color: #ffffff;
+  margin-left: 20px;
+}
+.pop-up_buy .card .credit-card .credit .card-data input {
+  width: 70px;
+  border-radius: 5px;
+  margin-left: 4px;
+  background-color: rgba(255, 255, 255, 0.247);
+}
+.pop-up_buy .card .confirm {
+  border: none;
+  background: #1A4ADA;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+}

@@ -6,7 +6,7 @@ const Navbar: FC<{ price: number; amount: number }> = (props) => {
     <nav className="bg-slate-900 flex items-center justify-between flex-wrap bg-grey-darkest p-6  w-full z-10 pin-t">
       <div className="flex items-center flex-no-shrink text-white mr-6">
         <Link
-          className="text-white no-underline hover:text-white hover:no-underline"
+          className="text-white hover:opacity-60 no-underline hover:text-white hover:no-underline"
           to="/"
         >
           <span className="text-2xl pl-2">
@@ -24,7 +24,7 @@ const Navbar: FC<{ price: number; amount: number }> = (props) => {
           </li>
           <li className="mr-3">
             <Link
-              className="inline-block py-2 px-4 text-white no-underline"
+              className="inline-block hover:opacity-60 py-2 px-4 text-white no-underline"
               to="/"
             >
               Home
@@ -35,7 +35,7 @@ const Navbar: FC<{ price: number; amount: number }> = (props) => {
               {props.amount}
             </p>
             <Link
-              className="inline-block text-white no-underline hover:text-grey-lighter hover:text-underline py-2 px-4"
+              className="inline-block hover:opacity-60 text-white no-underline hover:text-grey-lighter hover:text-underline py-2 px-4"
               to="/cart"
             >
               cart

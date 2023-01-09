@@ -84,8 +84,8 @@ const Popup: FC<popup> = (props) => {
         if (value.split(" ").length > 1) {
           setNameDirty(
             value.split(" ")[0].length > 3 && value.split(" ")[1].length > 3
-              ? 0
-              : 1
+              ? CORRECT
+              : NOT_CORRECT
           );
         } else {
           setNameDirty(NOT_CORRECT);
@@ -106,9 +106,9 @@ const Popup: FC<popup> = (props) => {
         break;
       case "address":
         if (value.split(" ").length > 2) {
-          let i = value.split(" ");
+          let address = value.split(" ");
           setAddressDirty(
-            i[0].length > 4 && i[1].length > 4 && i[2].length > 4
+            address[0].length > 4 && address[1].length > 4 && address[2].length > 4
               ? CORRECT
               : NOT_CORRECT
           );
@@ -157,7 +157,7 @@ const Popup: FC<popup> = (props) => {
   }
 
   return (
-    <div className={isHidden === true ? "" : "hidden"}>
+    <div className={isHidden ? "" : "hidden"}>
       <div className="pop-up_buy">
         <div className="overlay" onClick={() => hide()}></div>
         <div

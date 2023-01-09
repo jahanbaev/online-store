@@ -15,8 +15,8 @@ const Card = (props: {
           <div
             className={
               window.location.href.includes("big=true")
-                ? "col-span-2 h-96 bg-white p-1 relative overflow-hidden"
-                : "col-span-1 h-80 bg-white p-1 relative overflow-hidden"
+                ? "hover:bg-gray-100 cursor-pointer col-span-2 h-96 bg-white p-1 relative overflow-hidden"
+                : "hover:bg-gray-100 cursor-pointer col-span-1 h-80 bg-white p-1 relative overflow-hidden"
             }
             key={e.id}
           >

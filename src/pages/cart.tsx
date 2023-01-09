@@ -24,8 +24,8 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
     
     
     useEffect(():void => {
-        const st = (state === null)?0:state.id
-        if(st > 0)setHidden(true)
+        const isSateHasId = (state === null)?0:state.id
+        if(isSateHasId !== 0)setHidden(true)
         getList()
         setMaxElems(2)
         let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
@@ -188,7 +188,7 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
         <div className="w-full flex justify-center">
             {
                 pagination.map(e=>{
-                    return <div key={e} onClick={()=> setPageIndex(e)} className={ (pageIndex === e)?"opacity-50 w-12 h-12 m-2 flex items-center justify-center bg-slate-900 text-white":"w-12 h-12 m-2 flex items-center justify-center bg-slate-900 text-white"}>{e}</div>
+                    return <div key={e} onClick={()=> setPageIndex(e)} className={ (pageIndex === e)?"hover:opacity-60 cursor-pointer opacity-50 w-12 h-12 m-2 flex items-center justify-center bg-slate-900 text-white":"hover:opacity-60 cursor-pointer w-12 h-12 m-2 flex items-center justify-center bg-slate-900 text-white"}>{e}</div>
                 })
             }
         </div>

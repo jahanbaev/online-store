@@ -106,8 +106,8 @@ const Product: FC<{clc: () => void;}> = (props) =>{
                         <div className="bg-white p-2 mt-4 mb-6">
                             <h1 className="text-2xl mb-3 m-1 mt-0">Order now or later for {e.price}$</h1>
                             <div className="flex">
-                            <button onClick={()=>show()} className="bg-blue-700 text-white w-full m-1 h-10">Buy now</button>
-                            <button onClick={()=>toCart(e.id + "")} className="bg-gray-900 text-white w-full m-1 h-10">{(!cartList.includes(e.id))?"Add to cart": "remove from card"}</button>
+                            <button onClick={()=>show()} className="bg-blue-700 hover:opacity-60 text-white w-full m-1 h-10">Buy now</button>
+                            <button onClick={()=>toCart(e.id + "")} className="bg-gray-900 hover:opacity-60 text-white w-full m-1 h-10">{(!cartList.includes(e.id))?"Add to cart": "remove from card"}</button>
                             </div>
                         </div>
                     </div>

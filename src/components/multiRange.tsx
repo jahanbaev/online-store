@@ -10,7 +10,7 @@ interface functionProps {
 const MultiRange: FC<functionProps> = (props) => {
   const [minValue, setMinValue] = useState<number>();
   const [maxValue, setMaxValue] = useState<number>();
-  const monthNames: string[] = [""];
+
   let onload: number = 0;
   const setParams = (e: ChangeResult): void => {
     if (onload !== 0) {
@@ -30,7 +30,7 @@ const MultiRange: FC<functionProps> = (props) => {
       </div>
       <div className="multi-range-slider-container">
         <MultiRangeSlider
-          labels={monthNames}
+          labels={[""]}
           min={0}
           max={props.maxVal}
           minValue={

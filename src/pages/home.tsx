@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import Rating from '@mui/material/Rating';
+import React, { FC, useEffect, useRef, useState } from "react";
 import {addCart} from './../scripts/addCart'
 import {setUrl, getParam} from './../scripts/setUrl'
 import Filter from "../components/filters";
@@ -9,7 +8,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { product } from "../scripts/interfaces";
 import Card from "../components/card";
 
-const Home: React.FunctionComponent<{clc: () => void;}> = (props) =>{
+const Home: FC<{clc: () => void;}> = (props) =>{
     const [cart, setCart] = useState<number[]>([]);
     const [maxStock, setMaxStock] = useState<number>(9999999999999);
     const [maxPrice, setPrice] = useState<number>(9999999999999);
@@ -22,7 +21,7 @@ const Home: React.FunctionComponent<{clc: () => void;}> = (props) =>{
     const found = useRef<HTMLDivElement>(null);
     const foundRes = useRef<HTMLDivElement>(null);
     
-    function setFilter(type:string, val: string): void{
+    const setFilter = (type:string, val: string): void =>{
         if(getParam(type) === 'null'){
             setUrl(type,val.replaceAll(" ",""))
         }else{
@@ -34,28 +33,28 @@ const Home: React.FunctionComponent<{clc: () => void;}> = (props) =>{
         }
     }
 
-    function fill(event : {target : HTMLInputElement}):void{
+    const fill = (event : {target : HTMLInputElement}):void =>{
         setUrl("search", event.target.value.toLowerCase())
     }
 
-    function toCart(id: string):void{
+    const toCart = (id: string):void =>{
         setCart(addCart(id, resultList, cart))
         props.clc()
     }
 
-    function copied():void{
+    const copied = ():void =>{
         setCopy("copied!!")
         setTimeout(() => {
             setCopy("copy filters")
         }, 2000);
     }
 
-    function reset():void{
+    const reset = ():void => {
         window.location.href =  window.location.href.split("#")[0] + "#?"
         querySearch()
     }
 
-    function querySearch(): void | boolean{
+    const querySearch = (): void | boolean => {
         setValue(window.location.href)
         setResultFilteredList(resultList)
                 let s: string[] | string = getParam("brand").split("*");
@@ -175,6 +174,7 @@ const Home: React.FunctionComponent<{clc: () => void;}> = (props) =>{
 
                 setCategores(a)                
             })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

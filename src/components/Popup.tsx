@@ -3,13 +3,9 @@ import CreditCard from "./popup/CreditCard";
 import { useNavigate } from "react-router-dom";
 import ValidError from "./elements/ValidError";
 import { inputValidation } from "../scripts/validationValues";
+import { Ipopup } from "../scripts/interfaces";
 
-interface popup {
-  reverse: () => boolean;
-  hidden: boolean;
-}
-
-const Popup: FC<popup> = (props) => {
+const Popup: FC<Ipopup> = (props) => {
   const NOT_CHECKED = -1;
   const NOT_CORRECT = 1;
   const CORRECT = 0;

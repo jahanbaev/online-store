@@ -4,11 +4,11 @@ import Home from './pages/home';
 import Cart from './pages/cart';
 import Product from './pages/product';
 import NotFound from './pages/NotFound';
-import {productAmount} from './scripts/interfaces';
+import {productAmount, productSort} from './scripts/interfaces';
 import Navbar from './components/sections/navBar';
 import Footer from './components/sections/footer';
 
-interface productSort {price: number; amount: number}
+
 
 const App: FC = ()  => {	
 	const [price, setPrice] = useState<number>();

@@ -1,9 +1,9 @@
-import { product } from "./interfaces";
+import { Iproduct } from "./interfaces";
 
-const addCart = (id: string, list: product[], cart: number[]): number[] => {
+const addCart = (id: string, list: Iproduct[], cart: number[]): number[] => {
   let c: number[] = [];
-  let products: product[] = JSON.parse(localStorage.getItem("cart") + "");
-  let product: product = list.filter((e: { id: number }) => {
+  let products: Iproduct[] = JSON.parse(localStorage.getItem("cart") + "");
+  let product: Iproduct = list.filter((e: { id: number }) => {
     return e.id === parseInt(id);
   })[0];
   if (cart.includes(parseInt(id))) {
@@ -24,7 +24,7 @@ const addCart = (id: string, list: product[], cart: number[]): number[] => {
 
 const getCartList = (): number[] => {
   let c: number[] = [];
-  let products: product[] = JSON.parse(localStorage.getItem("cart") + "");
+  let products: Iproduct[] = JSON.parse(localStorage.getItem("cart") + "");
   products.forEach((e: { id: number }) => {
     c.push(e.id);
   });

@@ -1,23 +1,21 @@
 import { FC, useState } from "react";
 import MultiRangeSlider, { ChangeResult } from "multi-range-slider-react";
-import "./../styles/slider.css";
-import { getParam, setUrl } from "../scripts/setUrl";
-interface functionProps {
-  name: string;
-  maxVal: string | number | undefined;
-}
+import "../../styles/slider.css";
+import { getParam, setUrl } from "../../scripts/setUrl";
+import { IfunctionProps } from "../../scripts/interfaces";
 
-const MultiRange: FC<functionProps> = (props) => {
+
+const MultiRange: FC<IfunctionProps> = (props) => {
   const [minValue, setMinValue] = useState<number>();
   const [maxValue, setMaxValue] = useState<number>();
+  const [isLoad, setIsLoad] = useState<boolean>(false);
 
-  let onload: number = 0;
   const setParams = (e: ChangeResult): void => {
-    if (onload !== 0) {
+    if (isLoad) {
       setUrl(props.name + "Min", e.minValue + "");
       setUrl(props.name + "Max", e.maxValue + "");
     }
-    onload = 1;
+    setIsLoad(true)
     setMinValue(e.minValue);
     setMaxValue(e.maxValue);
   };

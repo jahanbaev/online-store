@@ -14,7 +14,7 @@ const FilterList: FC<componentProps> = (props) => {
           <div
             onClick={() => props.filter(props.filType, brand)}
             className={
-              window.location.href.includes(brand)
+              window.location.href.includes("="+brand) || window.location.href.includes("*"+brand)
                 ? "h-12 flex items-center hover:opacity-60 cursor-pointer mb-[2px] bg-slate-900 text-white p-1"
                 : "h-12 flex items-center hover:opacity-60 cursor-pointer mb-[2px] bg-white text-slate-900 p-1"
             }

@@ -3,17 +3,17 @@ import {addCart} from './../scripts/addCart'
 import {setUrl, getParam} from './../scripts/setUrl'
 import Filter from "../components/filters";
 import FilterList from "../components/filterList";
-import MultiRange from "../components/multiRange";
+import MultiRange from "../components/elements/multiRange";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import { product } from "../scripts/interfaces";
+import { Iproduct } from "../scripts/interfaces";
 import Card from "../components/card";
 
-const Home: FC<{clc: () => void;}> = (props) =>{
+const Home: FC<{calculateCart: () => void;}> = (props) =>{
     const [cart, setCart] = useState<number[]>([]);
     const [maxStock, setMaxStock] = useState<number>(9999999999999);
     const [maxPrice, setPrice] = useState<number>(9999999999999);
-    const [resultList, setResultList] = useState<product[]>([]);
-    const [resultFilteredList, setResultFilteredList] = useState<product[]>([]);
+    const [resultList, setResultList] = useState<Iproduct[]>([]);
+    const [resultFilteredList, setResultFilteredList] = useState<Iproduct[]>([]);
     const [brands, setBrands] = useState<string[]>([]);
     const [val, setValue] = useState<string>("");
     const [copy, setCopy] = useState<string>("copy filters");
@@ -23,12 +23,12 @@ const Home: FC<{clc: () => void;}> = (props) =>{
     
     const setFilter = (type:string, val: string): void =>{
         if(getParam(type) === 'null'){
-            setUrl(type,val.replaceAll(" ",""))
+            setUrl(type,val)
         }else{
-            if(window.location.href.includes(val.replaceAll(" ",""))){
-                setUrl(type, String(getParam(type)).replace("*" + val.replaceAll(" ",""), "").replace(val.replaceAll(" ",""), ""))
+            if(window.location.href.includes(val)){
+                setUrl(type, String(getParam(type)).replace("*" + val, "").replace(val, ""))
             }else{
-                setUrl(type, getParam(type) + "*" + val.replaceAll(" ",""))
+                setUrl(type, getParam(type) + "*" + val)
             }
         }
     }
@@ -39,7 +39,7 @@ const Home: FC<{clc: () => void;}> = (props) =>{
 
     const toCart = (id: string):void =>{
         setCart(addCart(id, resultList, cart))
-        props.clc()
+        props.calculateCart()
     }
 
     const copied = ():void =>{
@@ -62,13 +62,13 @@ const Home: FC<{clc: () => void;}> = (props) =>{
                 if(s[0] !== 'null')
                     fil = resultFilteredList.filter((e : {brand: string;})=>{
                         let val = String(e.brand)
-                        return ((s[0] === "" && s.length === 1))?true:s.includes(val.replaceAll(" ",""))
+                        return ((s[0] === "" && s.length === 1))?true:s.includes(val.replace(/([\/\,\'\\\^\$\{\}\[\]\(\)\.\*\ \?\|\<\>\-\&])/g,""))
                     })
                 s = getParam("category").split("*");
                 if(s[0] !== 'null')
                     fil = fil.filter((e : {['category']: string;})=>{
                         let val = String(e['category'])
-                        return ((s[0] === "" && s.length === 1) || s[0] === "null")?true:s.includes(val.replaceAll(" ",""))
+                        return ((s[0] === "" && s.length === 1) || s[0] === "null")?true:s.includes(val.replace(/([\/\,\'\\\^\$\{\}\[\]\(\)\.\*\ \?\|\<\>\-\&])/g,""))
                     })
                 
                 s = getParam("search");
@@ -76,7 +76,7 @@ const Home: FC<{clc: () => void;}> = (props) =>{
                     fil = fil.filter((e : {description: string;})=>{
                     let val = String(e.description)
                     let s = getParam("search");
-                    return (s === "" || s === "null")?true:val.toLowerCase().replaceAll(" ","").includes(s)
+                    return (s === "" || s === "null")?true:val.toLowerCase().replace(/([\/\,\'\\\^\$\{\}\[\]\(\)\.\*\ \?\|\<\>\-\&])/g,"").includes(s)
                 })
 
     
@@ -106,22 +106,22 @@ const Home: FC<{clc: () => void;}> = (props) =>{
 
                 switch (getParam("sort")) {
                     case "price-asc":
-                        fil.sort(function(a:product, b:product){return a.price - b.price})
+                        fil.sort((a:Iproduct, b:Iproduct) => a.price - b.price)
                     break;
                     case 'price-desc':
-                        fil.sort(function(a:product, b:product){return b.price - a.price})
+                        fil.sort((a:Iproduct, b:Iproduct) => b.price - a.price)
                     break;
                     case 'rating-asc':
-                        fil.sort(function(a:product, b:product){return a.rating - b.rating})
+                        fil.sort((a:Iproduct, b:Iproduct) => a.rating - b.rating)
                     break;
                     case 'rating-desc':
-                        fil.sort(function(a:product, b:product){return b.rating - a.rating})
+                        fil.sort((a:Iproduct, b:Iproduct)=> b.rating - a.rating)
                     break;
                     case 'discount-asc':
-                        fil.sort(function(a:product, b:product){return a.discountPercentage - b.discountPercentage})
+                        fil.sort((a:Iproduct, b:Iproduct) => a.discountPercentage - b.discountPercentage)
                     break;
                     case 'discount-desc':
-                        fil.sort(function(a:product, b:product){return b.discountPercentage - a.discountPercentage})
+                        fil.sort((a:Iproduct, b:Iproduct) => b.discountPercentage - a.discountPercentage)
                     break;
                 }
                 
@@ -135,44 +135,40 @@ const Home: FC<{clc: () => void;}> = (props) =>{
     }
     
     useEffect(() => {
-        props.clc()
+        props.calculateCart()
         let cart: number[] = [];
         if(localStorage.getItem('cart') == null){
             localStorage.setItem("cart", "[]")
         }
-        let products: product[] = JSON.parse(localStorage.getItem('cart')  + "")
+        let products: Iproduct[] = JSON.parse(localStorage.getItem('cart')  + "")
         products.forEach((e : {id: number})=> {
             cart.push(e.id)
         })
         
         setCart(cart)
 
-        fetch('https://dummyjson.com/products?limit=100')
+        fetch('https://dummyjson.com/products?limit=60')
             .then(req => req.json()).then(res => {
                 setResultList(res.products);
                 setResultFilteredList(res.products);
-                let a : string[] = [];
+                let list : string[] = [];
                 let maxPrice = 0;
                 let maxStock = 0;
-                res.products.forEach((e : {
-                    stock: number;
-                    price: number;
-                    brand: string
-                }) => {
-                    if(maxPrice < e.price)maxPrice = e.price
-                    if(maxStock < e.stock)maxStock = e.stock
-                    if(!a.includes(e.brand)) a.push(e.brand.replaceAll(" ",""))
+                
+                res.products.forEach((product: Iproduct) => {
+                    if(maxPrice < product.price)maxPrice = product.price
+                    if(maxStock < product.stock)maxStock = product.stock
                 })
-
                 setPrice(maxPrice)
                 setMaxStock(maxStock)
-                setBrands(a)
-                a = []
-                res.products.forEach((e : {category: string}) => {
-                    if(!a.includes(e.category)) a.push(e.category.replaceAll(" ",""))
-                })
+                
+                list = res.products.map((product: Iproduct)=>product.brand.replace(/([\/\,\'\\\^\$\{\}\[\]\(\)\.\*\ \?\|\<\>\-\&])/g,""))
+                list = [...new Set(list)]
+                setBrands(list)
 
-                setCategores(a)                
+                list = res.products.map((product: Iproduct)=>product.category.replace(/([\/\,\'\\\^\$\{\}\[\]\(\)\.\*\ \?\|\<\>\-\&])/g,""))
+                list = [...new Set(list)]
+                setCategores(list)                
             })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -188,7 +184,7 @@ const Home: FC<{clc: () => void;}> = (props) =>{
     
     return <div>
                 <div className="flex w-full">
-                    <div className="w-96 h-[100vh] pt-3">
+                    <div className="w-96 min-h-[100vh] pb-8 pt-3">
                         <input type="text" value={getParam("search") !== 'null'?getParam("search"):""} onChange={fill} className="w-[92.5%] h-[36px] bg-white  ml-2 block p-2 " placeholder="search any products"/>
                         <div className="flex p-1 w-[98%] mt-2 mb-[-5px]">
                         <input className="hidden" value={val} />               

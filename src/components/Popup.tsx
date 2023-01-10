@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
+import CreditCard from "./popup/CreditCard";
 import { useNavigate } from "react-router-dom";
-import visa from "./../assets/icons/Visa_Inc._logo.png";
-import master from "./../assets/icons/Mastercard-logo.png";
-import unionPay from "./../assets/icons/UnionPay_logo.png";
+import ValidError from "./elements/ValidError";
+import { inputValidation } from "../scripts/validationValues";
+
 interface popup {
   reverse: () => boolean;
   hidden: boolean;
@@ -23,7 +24,10 @@ const Popup: FC<popup> = (props) => {
   const [codeDirty, setCodeDirty] = useState(NOT_CHECKED);
   const [cvv, setCvv] = useState(300);
   const [isHidden, setIsHidden] = useState<boolean>(false);
-  const [isHidePop, setIsHidepop] = useState<boolean>(false);
+  const [isHidePop, setIsHidePop] = useState<boolean>(false);
+  const [lastVal, setLastVal] = useState<string>();
+
+  
 
   const isAllValid = (): boolean => {
     let isValid: number = CORRECT;
@@ -58,9 +62,9 @@ const Popup: FC<popup> = (props) => {
     return !isValid;
   };
 
-  function confirmForm() {
+  const confirmForm = (): void => {
     if (isAllValid()) {
-      setIsHidepop(true);
+      setIsHidePop(true);
       localStorage.setItem("cart", "[]");
       setTimeout(() => {
         history("/");
@@ -68,30 +72,25 @@ const Popup: FC<popup> = (props) => {
     }
   }
 
-  let lastVal: string = "";
+  
   const setSlash = (elem: { target: HTMLInputElement }): void => {
-    if (
-      lastVal.length < elem.target.value.length &&
-      elem.target.value.length === 2
-    ) {
+    const isSlashNeeded : boolean = String(lastVal).length < elem.target.value.length && elem.target.value.length === 2
+    if (isSlashNeeded) {
       elem.target.value += "/";
     }
-    lastVal = elem.target.value;
+    setLastVal(elem.target.value);
   };
-  const blurHandler = (e: string, value: string): void => {
-    switch (e) {
-      case "name":
+  const blurHandler = (name: string, value: string): void => {
+    switch (name) {
+      case inputValidation.name:
         if (value.split(" ").length > 1) {
-          setNameDirty(
-            value.split(" ")[0].length > 3 && value.split(" ")[1].length > 3
-              ? CORRECT
-              : NOT_CORRECT
-          );
+          const isDirty : number =  value.split(" ")[0].length > 3 && value.split(" ")[1].length > 3 ? CORRECT : NOT_CORRECT;
+          setNameDirty(isDirty);
         } else {
           setNameDirty(NOT_CORRECT);
         }
         break;
-      case "number":
+      case inputValidation.number:
         if (
           value[0] === "+" &&
           value.length > 9 &&
@@ -104,7 +103,7 @@ const Popup: FC<popup> = (props) => {
         }
 
         break;
-      case "address":
+      case inputValidation.address:
         if (value.split(" ").length > 2) {
           let address = value.split(" ");
           setAddressDirty(
@@ -116,11 +115,11 @@ const Popup: FC<popup> = (props) => {
           setAddressDirty(NOT_CORRECT);
         }
         break;
-      case "email":
-        let re = /\S+@\S+\.\S+/;
-        setEmailDirty(re.test(value) ? CORRECT : NOT_CORRECT);
+      case inputValidation.email:
+        let mailCheck = /\S+@\S+\.\S+/;
+        setEmailDirty(mailCheck.test(value) ? CORRECT : NOT_CORRECT);
         break;
-      case "card":
+      case inputValidation.card:
         setCvv(parseInt(value[0]));
         setCardDirty(
           value.length === 16 &&
@@ -130,18 +129,19 @@ const Popup: FC<popup> = (props) => {
             : NOT_CORRECT
         );
         break;
-      case "valid":
+      case inputValidation.valid:
+        const valueWithoutSlash = value.replaceAll(" ", "").replace("/", "")
         setValidDirty(
           value.length === 5 &&
             parseInt(value.split("/")[0]) < 13 &&
             parseInt(value.split("/")[1]) < 32 &&
-            parseInt(value.replaceAll(" ", "").replace("/", "")) + "" ===
-              value.replaceAll(" ", "").replace("/", "")
+            String(parseInt(valueWithoutSlash)) ===
+            valueWithoutSlash
             ? CORRECT
             : NOT_CORRECT
         );
         break;
-      case "code":
+      case inputValidation.code:
         setCodeDirty(value.length === 3 ? CORRECT : NOT_CORRECT);
         break;
     }
@@ -151,7 +151,7 @@ const Popup: FC<popup> = (props) => {
     setIsHidden(props.hidden);
   }, [props.hidden]);
 
-  function hide() {
+  const hide = () => {
     setIsHidden(!isHidden);
     props.reverse();
   }
@@ -176,89 +176,50 @@ const Popup: FC<popup> = (props) => {
           <div className="personal-details">
             <h4>Personal details</h4>
             {nameDirty > 0 && (
-              <div className="text-red-600 text-left w-[80%] m-auto">Error</div>
+              <ValidError/>
             )}
             <input
-              onBlur={(e) => blurHandler("name", e.target.value)}
+              onBlur={(e) => blurHandler(inputValidation.name, e.target.value)}
               type="text"
               className="name"
               placeholder="Name"
             />
             {numberDirty > 0 && (
-              <div className="text-red-600 text-left w-[80%] m-auto">Error</div>
+              <ValidError/>
             )}
             <input
-              onBlur={(e) => blurHandler("number", e.target.value)}
+              onBlur={(e) => blurHandler(inputValidation.number, e.target.value)}
               type="text"
               className="number"
               placeholder="Phone number"
             />
             {addressDirty > 0 && (
-              <div className="text-red-600 text-left w-[80%] m-auto">Error</div>
+              <ValidError/>
             )}
             <input
-              onBlur={(e) => blurHandler("address", e.target.value)}
+              onBlur={(e) => blurHandler(inputValidation.address, e.target.value)}
               type="text"
               className="address"
               placeholder="Delivery address"
             />
             {emailDirty > 0 && (
-              <div className="text-red-600 text-left w-[80%] m-auto">Error</div>
+              <ValidError/>
             )}
             <input
-              onBlur={(e) => blurHandler("email", e.target.value)}
+              onBlur={(e) => blurHandler(inputValidation.email, e.target.value)}
               type="email"
               className="email"
               placeholder="email"
             />
           </div>
-          <div className="credit-card">
-            <h4>Credit card details</h4>
-            <div className="credit">
-              <img
-                src={cvv === 4 ? visa : cvv === 5 ? master : unionPay}
-                className="absolute top-2 z-20 left-5 w-9"
-                alt=""
-              />
-              {cardDirty > 0 && (
-                <div className="text-red-600 text-left absolute bottom-14">
-                  Error
-                </div>
-              )}
-              <input
-                onBlur={(e) => blurHandler("card", e.target.value)}
-                type="number"
-                className="card-number text-white"
-                placeholder="Card number"
-              />
-              <div className="card-data">
-                {validDirty > 0 && (
-                  <div className="text-red-600 text-left">Error</div>
-                )}
-                <label htmlFor="">Valid:</label>
-                <input
-                  name="valid"
-                  maxLength={5}
-                  className="text-white"
-                  onChange={setSlash}
-                  onBlur={(e) => blurHandler("valid", e.target.value)}
-                  type="text"
-                  placeholder="Valid Thru"
-                />
-                {codeDirty > 0 && (
-                  <div className="text-red-600 text-left">Error</div>
-                )}
-                <label htmlFor="">CVV</label>
-                <input
-                  className="bg-opacity-25 bg-white text-white"
-                  maxLength={3}
-                  onBlur={(e) => blurHandler("code", e.target.value)}
-                  type="number"
-                  placeholder="Code"
-                />
-              </div>
-            </div>
-          </div>
+          <CreditCard 
+            cvv={cvv}
+            blurHandler={blurHandler}
+            setSlash={setSlash}
+            cardDirty={cardDirty}
+            validDirty={validDirty}
+            codeDirty={codeDirty}
+            />
           <button
             type="button"
             onClick={() => confirmForm()}

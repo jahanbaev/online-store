@@ -1,16 +1,16 @@
-import React from "react";
-import { product } from "../scripts/interfaces";
+import React, { FC } from "react";
+import { Iproduct, IcardProps} from "../scripts/interfaces";
 import { Link } from "react-router-dom";
+import ToCartButton from "./elements/toCart";
 
-const Card = (props: {
-  addToCart(arg0: string): void;
-  cart: number[];
-  list: product[];
-  listSecond: product[];
-}) => {
+const Card: FC<IcardProps> = (props) => {
+
+  const toCart = (id: string): void => {
+    props.addToCart(String(id))
+  }
   return (
     <div className="grid grid-flow-row-dense grid-cols-4 gap-4 mt-4">
-      {props.list.map((e: product, i) => {
+      {props.list?.map((product: Iproduct) => {
         return (
           <div
             className={
@@ -18,31 +18,26 @@ const Card = (props: {
                 ? "hover:bg-gray-100 cursor-pointer col-span-2 h-96 bg-white p-1 relative overflow-hidden"
                 : "hover:bg-gray-100 cursor-pointer col-span-1 h-80 bg-white p-1 relative overflow-hidden"
             }
-            key={e.id}
+            key={product.id}
           >
             <p className="bg-blue-600 text-white absolute top-1 p-1 rounded-md leading-5 right-0 scale-75">
-              -{e.discountPercentage} %
+              -{product.discountPercentage} %
             </p>
-            <Link to={"/product?id=" + e.id}>
+            <Link to={"/product?id=" + product.id}>
               <img
                 className={
                   window.location.href.includes("big=true")
                     ? "h-[17rem] object-cover w-full"
                     : "h-52 object-cover w-full"
                 }
-                src={e.images[0]}
+                src={product.images[0]}
                 alt=""
               />
-              <h1 className="product-title text-xl">{e.title}</h1>
-              <h1 className="text-lg w-[90%] text-blue-600">{e.price} $</h1>
-              <h1 className="text-base w-[90%]">{e.description}</h1>
+              <h1 className="product-title text-xl">{product.title}</h1>
+              <h1 className="text-lg w-[90%] text-blue-600">{product.price} $</h1>
+              <h1 className="text-base w-[90%]">{product.description}</h1>
             </Link>
-            <button
-              onClick={() => props.addToCart(e.id + "")}
-              className="absolute bottom-28 right-2 bg-slate-900 bg-opacity-40 backdrop-blur-sm text-white p-1 rounded-sm "
-            >
-              {!props.cart.includes(e.id) ? "Add to cart" : "remove from card"}
-            </button>
+            <ToCartButton addToCart={toCart} cart={props.cart} product={product}/>
           </div>
         );
       })}

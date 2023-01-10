@@ -3,12 +3,12 @@ import Popup from "../components/Popup";
 import { useLocation } from "react-router";
 import { Link } from 'react-router-dom';
 import { setUrl, getParam } from "../scripts/setUrl";
-import { product } from "../scripts/interfaces";
+import { Iproduct } from "../scripts/interfaces";
 
-const Cart: FC<{clc: () => void;}> = (props) =>{
+const Cart: FC<{calculateCart: () => void;}> = (props) =>{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [test, settest] = useState<product[]>([]);
-    const [list, settList] = useState<product[]>([]);
+    const [test, settest] = useState<Iproduct[]>([]);
+    const [list, settList] = useState<Iproduct[]>([]);
     const [maxElems, setMaxElems] = useState<number>(1);
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [pagination, setPagination] = useState<number[]>([]);
@@ -16,6 +16,8 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
     const [discount, setDiscount] = useState<number>(0);
     const [promCodes, setPromCodes] = useState<{val: string; list: string[]}>({val: "",list:[]});
     const [hidden, setHidden] = useState<boolean>(false);
+    const [promCodesList, setPromCodesList] = useState<string[]>(["rs","epm","test"]);
+
     const promo = useRef<HTMLDivElement>(null);
     const promoInput = useRef<HTMLInputElement>(null);
     const maxInput = useRef<HTMLInputElement>(null);
@@ -25,10 +27,10 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
     
     useEffect(():void => {
         const isSateHasId = (state === null)?0:state.id
-        if(isSateHasId !== 0)setHidden(true)
+        if(isSateHasId !== 0){setHidden(true)}
         getList()
         setMaxElems(2)
-        let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
+        let products : Iproduct[] = JSON.parse(localStorage.getItem('cart')  + "")
         settList(products)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [settest])
@@ -52,8 +54,8 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
     useEffect(():void => {
         maxInput.current!.value = (getParam("max") === 'null')?'2':getParam("max")
         localStorage.setItem("cart", JSON.stringify(list));
-        props.clc();
-        let products : product[] = JSON.parse(localStorage.getItem('cart')  + "")
+        props.calculateCart();
+        let products : Iproduct[] = JSON.parse(localStorage.getItem('cart')  + "")
         let count = 0
         let totalPrice = 0
         products.forEach(e=>{
@@ -74,10 +76,9 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
     }
 
     const refreshList = ():void => {
-        let s: product = {
+        list.push({
             id: 0,title: "", description: "", price: 0, discountPercentage:0, rating: 0, stock: 0, brand: "", category: "",thumbnail: "",images: [], amount: 1
-        }
-        list.push(s)
+        })
         settList(list.filter(elem=> elem.id !== 0))
     }
 
@@ -87,9 +88,9 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
             if(list[i].amount === 1){
                 settList(list.filter(elem=> elem.id !== id))
             }else{
-                let listOrg: product = {...list[i]}
-                let n : number  = parseInt(listOrg.amount + "") - 1;
-                listOrg.amount = n;
+                let listOrg: Iproduct = {...list[i]}
+                let amount : number = parseInt(listOrg.amount + "") - 1;
+                listOrg.amount = amount;
                 list[i] = listOrg
                 refreshList()
             }
@@ -113,14 +114,14 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
             localStorage.setItem("cart", "[]")
         }
 
-        let products : product[] = JSON.parse(String(localStorage.getItem('cart')))
+        let products : Iproduct[] = JSON.parse(String(localStorage.getItem('cart')))
         settList(products)
-        let i: number = 0;
+        let index: number = 0;
         let p: number[] = []
-        for(i = 0; i < Math.floor(list.length / maxElems); i++){
-            p.push(i+1)
+        for(index = 0; index < Math.floor(list.length / maxElems); index++){
+            p.push(index+1)
         }
-        if(Math.floor(list.length / maxElems) !== list.length / maxElems) p.push(i+1)
+        if(Math.floor(list.length / maxElems) !== list.length / maxElems) p.push(index+1)
         setPagination(p)
     }
 
@@ -142,9 +143,8 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
     }
 
     const setPromo = (e:{target:HTMLInputElement}): void => {
-        let promos = ["rs","epm","test"]
         promo.current!.classList.add("hidden")
-        if(promos.includes(e.target.value.toLocaleLowerCase()) && !promCodes.list.includes(e.target.value.toLocaleLowerCase())){
+        if(promCodesList.includes(e.target.value.toLocaleLowerCase()) && !promCodes.list.includes(e.target.value.toLocaleLowerCase())){
             promo.current!.classList.remove("hidden")
             promo.current!.querySelector("p")!.innerText = "10% " + e.target.value
             setPromCodes({val: e.target!.value, list: promCodes.list})
@@ -156,14 +156,14 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
         <div className="w-full pt-2">
            <div className="flex ml-2 items-center">max croducts: <input type="text" ref={maxInput} placeholder="max" onChange={setTo}  className="p-2 m-2" /></div> 
             {
-                list.map((e : product, index : number)=>{
+                list.map((e : Iproduct, index : number)=>{
                     return (<div  className={(((pageIndex - 1) * maxElems) + maxElems > index && ((pageIndex - 1) * maxElems) <= index )?"p-2 relative":"p-2 hidden relative"}   key={index} > 
                                 <div className="bg-white  relative w-full flex p-1 items-center">
                                     <Link to={"/product?id=" + e.id} className="flex w-full">
                                         <p className="absolute min-w-[15px] h-5 top-1 text-center rounded-sm pl-1 pr-1 left-1 leading-5 bg-black text-white bg-opacity-40 backdrop-blur-lg ">{index + 1}</p>
                                         <img src={e.images[0]} className="w-32 h-28" alt="" />
                                         <div className="p-2 w-full h-28 items-start flex flex-col">
-                                        <h1 className="text-xl text-slate-900">{e.title}  <span className="ml-5 text-xl text-blue-700">{e.price} $</span></h1>
+                                        <h1 className="text-xl text-slate-900">{e.title}<span className="ml-5 text-xl text-blue-700">{e.price} $</span></h1>
                                         <h1 className="text-xl text-slate-900">{e.description}</h1>
                                         </div>
                                     </Link>
@@ -205,7 +205,6 @@ const Cart: FC<{clc: () => void;}> = (props) =>{
                     )
                 })
             }
-
             
             <input ref={promoInput} onChange={setPromo} className="w-full bg-gray-200 mt-4 mb-3 h-10 p-2" placeholder="enter promo code (epm, rs, test)" type="text" />
             <div className="flex mb-3 hidden" ref={promo} >

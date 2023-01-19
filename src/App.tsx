@@ -9,7 +9,6 @@ import Navbar from './components/sections/navBar';
 import Footer from './components/sections/footer';
 
 
-
 const App: FC = ()  => {	
 	const [price, setPrice] = useState<number>();
 	const [count, setCount] = useState<number>();

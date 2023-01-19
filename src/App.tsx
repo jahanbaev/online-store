@@ -8,7 +8,6 @@ import NotFound from './pages/NotFound';
 const App = () => {	
 	const [local, setLocals] = useState<number>(0)
 	const [count, setCount] = useState<number>(0)
-	
 	useEffect(() => {
 		setLocal()
 	},[local])
